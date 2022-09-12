@@ -1,0 +1,6 @@
+pymysql
+requests_toolbelt
+PyJWT
+cryptography
+requests
+pandas
