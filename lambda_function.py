@@ -22,13 +22,21 @@ my_bucket = s3.Bucket(bucket)
 ## This is the entry point for the API endpoint being called.
 def lambda_handler(event, context):
     print("function called")
+    # get the objects in the bucket
     keys = read_from_s3()
+    # Iterate through the keys
     for key in keys:
-        csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
-        body = csv_obj['Body']
-        csv_string = body.read().decode('utf-8')
-        df = pd.read_csv(StringIO(csv_string))
+        #csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
+        #body = csv_obj['Body']
+        #csv_string = body.read().decode('utf-8')
+        #df = pd.read_csv(StringIO(csv_string))
+        df = pd.read_csv('s3:/' + bucket + "us-east-2.amazonaws.com/"+ key)
         print("dataframe:\n",df.head())
+        # Validate the file/contents
+
+        # Iterate the rows in the dataframe
+            # construct the SQL
+            # write to RDS Database
 
 ## UTILITY FUNCTIONS
 def read_from_s3():
