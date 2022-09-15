@@ -28,10 +28,10 @@ def lambda_handler(event, context):
     for key in keys:
         csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
         print("gotten obj:",csv_obj)
-        body = csv_obj['Body']
+        body = csv_obj['Body'].read().decode('utf-8')
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
-        df = pd.read_csv(FileIO(body.read()))
+        df = pd.read_csv(StringIO(body))
         print("dataframe:\n",df.head())
         # Validate the file/contents
 
