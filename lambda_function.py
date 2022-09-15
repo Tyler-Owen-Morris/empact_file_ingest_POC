@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         #body = csv_obj['Body']
         #csv_string = body.read().decode('utf-8')
         #df = pd.read_csv(StringIO(csv_string))
-        df = pd.read_csv('s3:/' + bucket + "us-east-2.amazonaws.com/"+ key)
+        df = pd.read_csv('s3:/' + bucket + ".us-east-2.amazonaws.com/"+ key)
         print("dataframe:\n",df.head())
         # Validate the file/contents
 
