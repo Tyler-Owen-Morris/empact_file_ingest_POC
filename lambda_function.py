@@ -26,11 +26,10 @@ def lambda_handler(event, context):
     keys = read_from_s3()
     # Iterate through the keys
     for key in keys:
-        #csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
+        csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
         #body = csv_obj['Body']
         #csv_string = body.read().decode('utf-8')
-        #df = pd.read_csv(StringIO(csv_string))
-        df = pd.read_csv('s3:/' + bucket + ".us-east-2.amazonaws.com/"+ key)
+        df = pd.read_csv(csv_obj['Body'])
         print("dataframe:\n",df.head())
         # Validate the file/contents
 
