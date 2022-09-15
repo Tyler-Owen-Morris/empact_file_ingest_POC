@@ -21,6 +21,7 @@ my_bucket = s3.Bucket(bucket)
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
 ## This is the entry point for the API endpoint being called.
 def lambda_handler(event, context):
+    print("function called")
     pass
 
 ## UTILITY FUNCTIONS
