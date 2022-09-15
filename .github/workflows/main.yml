@@ -51,7 +51,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: file_to_rds_repository
+          ECR_REPOSITORY: file_to_rds_poc
           IMAGE_TAG: latest-${{ steps.time.outputs.time }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
