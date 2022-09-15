@@ -27,7 +27,9 @@ def lambda_handler(event, context):
     # Iterate through the keys
     for key in keys:
         csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
-        #body = csv_obj['Body']
+        print("gotten obj:",csv_obj)
+        body = csv_obj['Body']
+        print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(csv_obj['Body'])
         print("dataframe:\n",df.head())
