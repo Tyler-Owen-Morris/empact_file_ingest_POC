@@ -10,7 +10,7 @@ import pandas as pd
 
 
 ## **** CONFIGURATION VARIABLES **** ##
-bucket = 'walkersftptest'
+bucket = 'empact-test'
 
 # S3 INIT
 s3 = boto3.resource('s3')
