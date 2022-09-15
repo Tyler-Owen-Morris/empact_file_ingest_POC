@@ -30,6 +30,6 @@ def read_from_s3():
     my_bucket = s3.Bucket(bucket)
     ret = []
     for obj in my_bucket.objects.all():
-        print(obj)
+        print("My bucket object: ",obj)
         ret.append(obj)
     return ret
