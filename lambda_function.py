@@ -22,7 +22,13 @@ my_bucket = s3.Bucket(bucket)
 ## This is the entry point for the API endpoint being called.
 def lambda_handler(event, context):
     print("function called")
-    read_from_s3()
+    keys = read_from_s3()
+    for key in keys:
+        csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
+        body = csv_obj['Body']
+        csv_string = body.read().decode('utf-8')
+        df = pd.read_csv(StringIO(csv_string))
+        print("dataframe:\n",df.head())
 
 ## UTILITY FUNCTIONS
 def read_from_s3():
@@ -31,5 +37,6 @@ def read_from_s3():
     ret = []
     for obj in my_bucket.objects.all():
         print("My bucket object: ",obj)
-        ret.append(obj)
+        print("key",obj.key)
+        ret.append(obj.key)
     return ret
