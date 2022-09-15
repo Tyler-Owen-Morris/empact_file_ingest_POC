@@ -31,7 +31,7 @@ def lambda_handler(event, context):
         body = csv_obj['Body'].read().decode('utf-8')
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
-        df = pd.read_csv(body)
+        df = pd.read_csv(StringIO(body), sep=",")
         print("dataframe:\n",df.head())
         # Validate the file/contents
 
