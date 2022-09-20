@@ -33,6 +33,8 @@ def lambda_handler(event, context):
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
         print("dataframe:\n",df.head())
+        for idx, row in df.iterrows():
+            print(row)
         # Validate the file/contents
 
         # Iterate the rows in the dataframe
