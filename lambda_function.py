@@ -1,10 +1,7 @@
 import pymysql
-import json
 from random import randint
-import os
-import csv
-from io import StringIO, BytesIO, FileIO
-import requests
+from io import StringIO
+import sqlalchemy
 import boto3
 import pandas as pd
 

@@ -4,3 +4,4 @@ PyJWT
 cryptography
 requests
 pandas
+sqlalchemy
