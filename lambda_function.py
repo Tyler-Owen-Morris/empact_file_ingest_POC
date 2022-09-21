@@ -25,11 +25,17 @@ s3 = boto3.resource('s3')
 s3_client = boto3.client('s3')
 my_bucket = s3.Bucket(bucket)
 
+# SQL INIT
+engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}'.format(username,password,endpoint))
+sql_tbl = pd.read_sql_table(database_name, engine)
+print(sql_tbl.head())
+
 ## ******* FUNCTIONS ****** ##
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
 ## This is the entry point for the API endpoint being called.
 def lambda_handler(event, context):
-    print("function called")
+    #print("event:",event)
+    #print("content:",context)
     # get the objects in the bucket
     keys = read_from_s3()
     # Iterate through the keys
