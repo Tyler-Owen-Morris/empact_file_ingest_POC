@@ -10,6 +10,9 @@ import pandas as pd
 ## **** CONFIGURATION VARIABLES **** ##
 # S3
 bucket = 'empact-test'
+## tables to be updated
+survey_tbl = "detention_survey_tbl"
+suspension_tbl = "tbl_suspended_visitations"
 # DB ENDPOINT
 endpoint = os.environ['DB_DOMAIN']
 username = os.environ['DB_USERNAME']
@@ -40,11 +43,11 @@ def lambda_handler(event, context):
         print("dataframe:\n",df.head())
         for idx, row in df.iterrows():
             print(row)
-        # Validate the file/contents
-
-        # Iterate the rows in the dataframe
-            # construct the SQL
-            # write to RDS Database
+        ### Validate the file/contents
+        #validate all headers exist
+            ## Validate the row values add up to correct values
+            ## Validate the data doesn't already exist in the database
+        # Write the results to SQL
 
 ## UTILITY FUNCTIONS
 def read_from_s3():
