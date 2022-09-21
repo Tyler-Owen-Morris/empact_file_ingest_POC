@@ -28,7 +28,7 @@ my_bucket = s3.Bucket(bucket)
 # SQL INIT
 engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}'.format(username,password,endpoint))
 sql_tbl = pd.read_sql_table(database_name, engine)
-print(sql_tbl.head())
+print("this confirms that the SQL table works properly:",sql_tbl.head())
 
 ## ******* FUNCTIONS ****** ##
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
