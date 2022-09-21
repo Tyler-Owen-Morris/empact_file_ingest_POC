@@ -27,7 +27,7 @@ s3_client = boto3.client('s3')
 my_bucket = s3.Bucket(bucket)
 
 # SQL INIT
-engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}'.format(username,password,endpoint)).connect()
+engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}/{}'.format(username,password,endpoint,database_name)).connect()
 sql_tbl = pd.read_sql_table(survey_tbl, engine)
 print("this confirms that the SQL table works properly:",sql_tbl.head())
 # connection = pymysql.connect(
