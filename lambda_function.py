@@ -1,4 +1,5 @@
 import pymysql
+import os
 from random import randint
 from io import StringIO
 import sqlalchemy
@@ -7,7 +8,14 @@ import pandas as pd
 
 
 ## **** CONFIGURATION VARIABLES **** ##
+# S3
 bucket = 'empact-test'
+# DB ENDPOINT
+endpoint = os.environ['DB_DOMAIN']
+username = os.environ['DB_USERNAME']
+password = os.environ['DB_PASS']
+database_name = os.environ['DB_NAME']
+
 
 # S3 INIT
 s3 = boto3.resource('s3')
