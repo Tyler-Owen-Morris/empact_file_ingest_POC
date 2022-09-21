@@ -33,6 +33,7 @@ my_bucket = s3.Bucket(bucket)
 connection = pymysql.connect(
     host=endpoint, user=username, passwd=password, db=database_name
 )
+print("conn:",connection)
 
 ## ******* FUNCTIONS ****** ##
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
