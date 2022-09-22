@@ -51,9 +51,10 @@ def lambda_handler(event, context):
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
-        print("dataframe:\n",df.head())
+        print("dataframe:",df)
         for idx, row in df.iterrows():
-            print(row)
+            print("row",row)
+            print("idx", idx)
         ### Validate the file/contents
         #validate all headers exist
             ## Validate the row values add up to correct values
@@ -66,7 +67,7 @@ def read_from_s3():
     my_bucket = s3.Bucket(bucket)
     ret = []
     for obj in my_bucket.objects.all():
-        print("My bucket object: ",obj)
-        print("key",obj.key)
+        # print("My bucket object: ",obj)
+        # print("key",obj.key)
         ret.append(obj.key)
     return ret
