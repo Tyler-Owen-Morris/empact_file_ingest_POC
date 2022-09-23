@@ -51,15 +51,23 @@ def lambda_handler(event, context):
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
+        ### Validate the file/contents
         print("dataframe:",df)
+        errs = []
         for idx, row in df.iterrows():
             print("row",row)
             print("idx", idx)
-        ### Validate the file/contents
-        #validate all headers exist
-            ## Validate the row values add up to correct values
-            ## Validate the data doesn't already exist in the database
-        # Write the results to SQL
+            resp = validate_row(row,idx)
+            if len(resp) > 0:
+                errs.append((idx,resp))
+        # Validate the data doesn't already exist in the database
+        exi = sql_tbl.query("Survey_Year == "+row['Survey_Year']+" and Survey_Month == "+row['Survey_Month']+" SiteID == "+ row['SiteID'])
+        print(exi.shape)
+        if exi.shape == 0 and len(errs) == 0:
+            # Write the results to SQL
+            print("modify this DF and write it")
+        else:
+            print("this DF is invalid, send failure text")
 
 ## UTILITY FUNCTIONS
 def read_from_s3():
@@ -71,3 +79,68 @@ def read_from_s3():
         # print("key",obj.key)
         ret.append(obj.key)
     return ret
+
+def validate_row(row,idx):
+    resp = []
+    #row.fillna(0,inplace=True)
+    # Month/year
+    mon = int(row['Survey_Month'])
+    yr = int(row['Survey_Year'])
+    # Population numbers
+    DetPop_First_Day = int(row['DetPop_First_Day'])
+    print(isinstance(row['P1_Race_White'],int))
+    p1w = (row['P1_Race_White'] if isinstance(row['P1_Race_White'],int) else 0) 
+    p1b = (row['P1_Race_Black'] if isinstance(row['P1_Race_Black'],int) else 0)
+    p1h = (row['P1_Race_Hisp'] if isinstance(row['P1_Race_Hisp'],int) else 0)
+    p1a = (row['P1_Race_Asian'] if isinstance(row['P1_Race_Asian'],int) else 0)
+    p1n = (row['P1_Race_Native'] if isinstance(row['P1_Race_Native'],int) else 0)
+    p1p = (row['P1_Race_Pacisl'] if isinstance(row['P1_Race_Pacisl'],int) else 0 )
+    p12 = (row['P1_Race_2Plus'] if isinstance(row['P1_Race_2Plus'],int) else 0)
+    p1o = (row['P1_Race_Other'] if isinstance(row['P1_Race_Other'],int) else 0)
+    p1u = (row['P1_Race_Unknown'] if isinstance(row['P1_Race_Unknown'],int) else 0)
+    p1r = (row['P1_Race_Refused'] if isinstance(row['P1_Race_Refused'],int) else 0)
+    p2w = (row['P2_Race_White'] if isinstance(row['P2_Race_White'],int) else 0)
+    p2b = (row['P2_Race_Black'] if isinstance(row['P2_Race_White'],int) else 0)
+    p2h = (row['P2_Race_Hisp'] if isinstance(row['P2_Race_Hisp'],int) else 0)
+    p2a = (row['P2_Race_Asian'] if isinstance(row['P2_Race_Asian'],int) else 0)
+    p2n = (row['P2_Race_Native'] if isinstance(row['P2_Race_Native'],int) else 0)
+    p2p = (row['P2_Race_Pacisl'] if isinstance(row['P2_Race_Pacisl'],int) else 0)
+    p22 = (row['P2_Race_2Plus'] if isinstance(row['P2_Race_2Plus'],int) else 0)
+    p2o = (row['P2_Race_Other'] if isinstance(row['P2_Race_Other'],int) else 0)
+    p2u = (row['P2_Race_Unknown'] if isinstance(row['P2_Race_Unknown'],int) else 0)
+    p2r = (row['P2_Race_Refused'] if isinstance(row['P2_Race_Refused'],int) else 0)
+    pop = p1w+p1b+p1h+p1a+p1n+p1p+p12+p1o+p1u+p1r+p2w+p2b+p2h+p2a+p2n+p2p+p22+p2o+p2u+p2r
+    print("population",pop)
+    # Admissions Numbers
+    Total_Adm_Prior_Month = int(row['Total_Adm_Prior_Month'])
+    a1w = (row['A1_Race_White'] if isinstance(row['A1_Race_White'],int) else 0)
+    a1b = (row['A1_Race_Black'] if isinstance(row['A1_Race_Black'],int) else 0)
+    a1h = (row['A1_Race_Hisp'] if isinstance(row['A1_Race_Hisp'],int) else 0)
+    a1a = (row['A1_Race_Asian'] if isinstance(row['A1_Race_Asian'],int) else 0)
+    a1n = (row['A1_Race_Native'] if isinstance(row['A1_Race_Native'],int) else 0)
+    a1p = (row['A1_Race_Pacisl'] if isinstance(row['A1_Race_Pacisl'],int) else 0)
+    a12 = (row['A1_Race_2Plus'] if isinstance(row['A1_Race_2Plus'],int) else 0)
+    a1o = (row['A1_Race_Other'] if isinstance(row['A1_Race_Other'],int) else 0)
+    a1u = (row['A1_Race_Unknown'] if isinstance(row['A1_Race_Unknown'],int) else 0)
+    a1r = (row['A1_Race_Refused'] if isinstance(row['A1_Race_Refused'],int) else 0)
+    a2w = (row['A2_Race_White'] if isinstance(row['A2_Race_White'],int) else 0)
+    a2b = (row['A2_Race_Black'] if isinstance(row['A2_Race_Black'],int) else 0)
+    a2h = (row['A2_Race_Hisp'] if isinstance(row['A2_Race_Hisp'],int) else 0)
+    a2a = (row['A2_Race_Asian'] if isinstance(row['A2_Race_Asian'],int) else 0)
+    a2n = (row['A2_Race_Native'] if isinstance(row['A2_Race_Native'],int) else 0)
+    a2p = (row['A2_Race_Pacisl'] if isinstance(row['A2_Race_Pacisl'],int) else 0)
+    a22 = (row['A2_Race_2Plus'] if isinstance(row['A2_Race_2Plus'],int) else 0)
+    a2o = (row['A2_Race_Other'] if isinstance(row['A2_Race_Other'],int) else 0)
+    a2u = (row['A2_Race_Unknown'] if isinstance(row['A2_Race_Unknown'],int) else 0)
+    a2r = (row['A2_Race_Refused'] if isinstance(row['A2_Race_Refused'],int) else 0)
+    adm = a1w+a1b+a1h+a1a+a1n+a1p+a12+a1o+a1u+a1r+a2w+a2b+a2h+a2a+a2n+a2p+a22+a2o+a2u+a2r
+    # Validation
+    if mon < 1 or mon > 12:
+        resp.append("Survey_Month Invalid")
+    if yr < 2000 or yr >2050:
+        resp.append("Survey_Year Invalid")
+    if pop != DetPop_First_Day:
+        resp.append("Population counts to not match reported totals")
+    if adm != Total_Adm_Prior_Month:
+        resp.append("Admission counts do not match reported totals")
+    return resp
