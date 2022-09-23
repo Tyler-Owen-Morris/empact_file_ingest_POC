@@ -61,7 +61,7 @@ def lambda_handler(event, context):
             if len(resp) > 0:
                 errs.append((idx,resp))
         # Validate the data doesn't already exist in the database
-        exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" SiteID == "+ str(row['SiteID'])
+        exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == "+ row['SiteID'])
         print(exi.shape)
         if exi.shape == 0 and len(errs) == 0:
             # Write the results to SQL
