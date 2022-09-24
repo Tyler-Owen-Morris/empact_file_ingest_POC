@@ -52,7 +52,7 @@ def lambda_handler(event, context):
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
-        valid = schema.schema.validate(df)
+        valid = schema.validate(df)
         print("len valid:",len(valid))
         print("valid",valid)
         ### Validate the file/contents
