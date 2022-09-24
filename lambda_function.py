@@ -74,6 +74,63 @@ def lambda_handler(event, context):
         else:
             print("this DF is invalid, send failure text")
 
+## DB SCHEMA DEFINITION
+schema = Schema([
+    Column('SiteID', [validation.InListValidation(['Walker (San Jose)'])]),
+    Column('contactID',[]),
+    Column('Survey_Month',[validation.InRangeValidation(0,12)]),
+    Column('Survey_Year',[validation.InRangeValidation(2000,2050)]),
+    Column('DetPop_First_Day',[]),
+    Column('Total_Adm_Prior_Month',[]),
+    Column('A1_Race_White',[]),
+    Column('A1_Race_Black',[]),
+    Column('A1_Race_Hisp',[]),
+    Column('A1_Race_Asian',[]),
+    Column('A1_Race_Native',[]),
+    Column('A1_Race_Pacisl',[]),
+    Column('A1_Race_2Plus',[]),
+    Column('A1_Race_Other',[]),
+    Column('A1_Race_Unknown',[]),
+    Column('A1_Race_Refused',[]),
+    Column('A2_Race_White',[]),
+    Column('A2_Race_Black',[]),
+    Column('A2_Race_Hisp',[]),
+    Column('A2_Race_Asian',[]),
+    Column('A2_Race_Native',[]),
+    Column('A2_Race_Pacisl',[]),
+    Column('A2_Race_2Plus',[]),
+    Column('A2_Race_Other',[]),
+    Column('A2_Race_Unknown',[]),
+    Column('A2_Race_Refused',[]),
+    Column('P1_Race_White',[]),
+    Column('P1_Race_Black',[]),
+    Column('P1_Race_Hisp',[]),
+    Column('P1_Race_Asian',[]),
+    Column('P1_Race_Native',[]),
+    Column('P1_Race_Pacisl',[]),
+    Column('P1_Race_2Plus',[]),
+    Column('P1_Race_Other',[]),
+    Column('P1_Race_Unknown',[]),
+    Column('P1_Race_Refused',[]),
+    Column('P2_Race_White',[]),
+    Column('P2_Race_Black',[]),
+    Column('P2_Race_Hisp',[]),
+    Column('P2_Race_Asian',[]),
+    Column('P2_Race_Native',[]),
+    Column('P2_Race_Pacisl',[]),
+    Column('P2_Race_2Plus',[]),
+    Column('P2_Race_Other',[]),
+    Column('P2_Race_Unknown',[]),
+    Column('P2_Race_Refused',[]),
+    Column('Admission_Reason_Unable',[]),
+    Column('Admission_Reason_New_Offense',[]),
+    Column('Admission_Reason_Technical',[]),
+    Column('Admission_Reason_Technical',[]),
+    Column('Admission_Reason_Post',[]),
+    Column('Admission_Reason_Other',[]),
+    Column('Admission_Reason_Unknown',[]),
+])
+
 ## UTILITY FUNCTIONS
 def read_from_s3():
     s3 = boto3.resource('s3')
@@ -149,3 +206,6 @@ def validate_row(row,idx):
     if adm != Total_Adm_Prior_Month:
         resp.append("Admission counts do not match reported totals")
     return resp
+
+
+    
