@@ -6,6 +6,8 @@ import sqlalchemy
 import pymysql
 import boto3
 import pandas as pd
+from pandas_schema import Column,Schema,validation
+import schema
 
 
 ## **** CONFIGURATION VARIABLES **** ##
@@ -51,6 +53,9 @@ def lambda_handler(event, context):
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
+        valid = schema.schema.validate(df)
+        print("len valid:",len(valid))
+        print("valid",valid)
         ### Validate the file/contents
         print("dataframe:",df)
         errs = []
