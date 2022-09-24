@@ -1,5 +1,7 @@
 import pymysql
 import os
+import datetime
+import uuid
 from random import randint
 from io import StringIO
 import sqlalchemy
@@ -70,6 +72,13 @@ def lambda_handler(event, context):
         if exi.shape == 0 and len(errs) == 0:
             # Write the results to SQL
             print("modify this DF and write it")
+            df['ResponseID'] = "AWS_"+uuid.uuid4().hex
+            df['Population_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['P 2_Race_White'],int)) else 'No']
+            df['Population_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['P1_Race_White'],int)) else 'No']
+            df['Admissions_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['A1_Race_White'],int)) else 'No']
+            df['Admissions_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['A2_Race_White'],int)) else 'No']
+            df['Adm_Report_Eth'] = [1 if (isinstance(df['A2_Race_White'],int)) else 2]
+            
         else:
             print("this DF is invalid, send failure text")
 
