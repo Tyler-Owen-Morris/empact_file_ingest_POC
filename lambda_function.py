@@ -78,7 +78,7 @@ def lambda_handler(event, context):
             df['Admissions_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['A1_Race_White'],int)) else 'No']
             df['Admissions_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['A2_Race_White'],int)) else 'No']
             df['Adm_Report_Eth'] = [1 if (isinstance(df['A2_Race_White'],int)) else 2]
-            
+            df.to_sql(survey_tbl,engine,if_exists='append',index=False)
         else:
             print("this DF is invalid, send failure text")
 
