@@ -7,7 +7,6 @@ import pymysql
 import boto3
 import pandas as pd
 from pandas_schema import Column,Schema,validation
-import schema
 
 
 ## **** CONFIGURATION VARIABLES **** ##
