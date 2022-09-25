@@ -22,66 +22,6 @@ endpoint = os.environ['DB_DOMAIN']
 username = os.environ['DB_USERNAME']
 password = os.environ['DB_PASS']
 database_name = os.environ['DB_NAME']
-
-
-# S3 INIT
-s3 = boto3.resource('s3')
-s3_client = boto3.client('s3')
-my_bucket = s3.Bucket(bucket)
-
-# SQL INIT
-engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}/{}'.format(username,password,endpoint,database_name)).connect()
-sql_tbl = pd.read_sql_table(survey_tbl, engine)
-print("this confirms that the SQL table works properly:",sql_tbl.head())
-# connection = pymysql.connect(
-#     host=endpoint, user=username, passwd=password, db=database_name
-# )
-# print("conn:",connection)
-
-## ******* FUNCTIONS ****** ##
-# AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
-## This is the entry point for the API endpoint being called.
-def lambda_handler(event, context):
-    #print("event:",event)
-    #print("content:",context)
-    # get the objects in the bucket
-    keys = read_from_s3()
-    # Iterate through the keys
-    for key in keys:
-        csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
-        print("gotten obj:",csv_obj)
-        body = csv_obj['Body'].read().decode('utf-8')
-        print("body:",body)
-        #csv_string = body.read().decode('utf-8')
-        df = pd.read_csv(StringIO(body), sep=",")
-        valid = schema.validate(df)
-        print("len valid:",len(valid))
-        print("valid",valid)
-        ### Validate the file/contents
-        print("dataframe:",df)
-        errs = []
-        for idx, row in df.iterrows():
-            print("row",row)
-            print("idx", idx)
-            resp = validate_row(row,idx)
-            if len(resp) > 0:
-                errs.append((idx,resp))
-        # Validate the data doesn't already exist in the database
-        exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == '"+row['SiteID']+"'")
-        print(exi.shape)
-        if exi.shape == 0 and len(errs) == 0:
-            # Write the results to SQL
-            print("modify this DF and write it")
-            df['ResponseID'] = "AWS_"+uuid.uuid4().hex
-            df['Population_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['P 2_Race_White'],int)) else 'No']
-            df['Population_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['P1_Race_White'],int)) else 'No']
-            df['Admissions_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['A1_Race_White'],int)) else 'No']
-            df['Admissions_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['A2_Race_White'],int)) else 'No']
-            df['Adm_Report_Eth'] = [1 if (isinstance(df['A2_Race_White'],int)) else 2]
-            df.to_sql(survey_tbl,engine,if_exists='append',index=False)
-        else:
-            print("this DF is invalid, send failure text")
-
 ## DB SCHEMA DEFINITION
 schema = Schema([
     Column('SiteID', [validation.InListValidation(['Walker (San Jose)'])]),
@@ -139,6 +79,70 @@ schema = Schema([
     Column('Admission_Reason_Unknown',[]),
 ])
 
+
+# S3 INIT
+s3 = boto3.resource('s3')
+s3_client = boto3.client('s3')
+my_bucket = s3.Bucket(bucket)
+
+# SQL INIT
+engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}/{}'.format(username,password,endpoint,database_name)).connect()
+sql_tbl = pd.read_sql_table(survey_tbl, engine)
+print("this confirms that the SQL table works properly:",sql_tbl.head())
+# connection = pymysql.connect(
+#     host=endpoint, user=username, passwd=password, db=database_name
+# )
+# print("conn:",connection)
+
+## ******* FUNCTIONS ****** ##
+# AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
+## This is the entry point for the API endpoint being called.
+def lambda_handler(event, context):
+    #print("event:",event)
+    #print("content:",context)
+    # get the objects in the bucket
+    keys = read_from_s3()
+    # Iterate through the keys
+    for key in keys:
+        csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
+        print("gotten obj:",csv_obj)
+        body = csv_obj['Body'].read().decode('utf-8')
+        print("body:",body)
+        #csv_string = body.read().decode('utf-8')
+        df = pd.read_csv(StringIO(body), sep=",")
+        valid = schema.validate(df)
+        print("len valid:",len(valid))
+        print("valid",valid)
+        ### Validate the file/contents
+        print("dataframe:",df)
+        errs = []
+        for idx, row in df.iterrows():
+            print("row",row)
+            print("idx", idx)
+            resp = validate_row(row)
+            exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == '"+row['SiteID']+"'")
+            print(exi.shape)
+            if exi.shape[0] > 0:
+                resp.append("Entry already exists in dataframe")
+            if len(resp) > 0:
+                errs.append((idx,resp))
+        # Validate the data doesn't already exist in the database
+        if len(errs) == 0:
+            # Write the results to SQL
+            print("modify this DF and write it")
+            df['ResponseID'] = "AWS_"+uuid.uuid4().hex
+            df['Population_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['P 2_Race_White'],int)) else 'No']
+            df['Population_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['P1_Race_White'],int)) else 'No']
+            df['Admissions_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['A1_Race_White'],int)) else 'No']
+            df['Admissions_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['A2_Race_White'],int)) else 'No']
+            df['Adm_Report_Eth'] = [1 if (isinstance(df['A2_Race_White'],int)) else 2]
+            df.to_sql(survey_tbl,engine,if_exists='append',index=False)
+        else:
+            print("this DF is invalid, send failure text")
+        # remove the processed object
+        s3.Object(bucket,key).delete()
+
+
 ## UTILITY FUNCTIONS
 def read_from_s3():
     s3 = boto3.resource('s3')
@@ -150,7 +154,7 @@ def read_from_s3():
         ret.append(obj.key)
     return ret
 
-def validate_row(row,idx):
+def validate_row(row):
     resp = []
     #row.fillna(0,inplace=True)
     # Month/year
