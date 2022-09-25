@@ -145,7 +145,8 @@ def read_from_s3():
     for obj in my_bucket.objects.all():
         print("My bucket object: ",obj)
         # print("key",obj.key)
-        ret.append(obj.key)
+        if obj.key != 'archive/':
+            ret.append(obj.key)
     return ret
 
 def validate_row(row):
