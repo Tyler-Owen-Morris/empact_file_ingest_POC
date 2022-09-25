@@ -143,7 +143,7 @@ def read_from_s3():
     my_bucket = s3.Bucket(bucket)
     ret = []
     for obj in my_bucket.objects.all():
-        # print("My bucket object: ",obj)
+        print("My bucket object: ",obj)
         # print("key",obj.key)
         ret.append(obj.key)
     return ret
