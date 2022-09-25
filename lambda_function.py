@@ -136,6 +136,7 @@ def lambda_handler(event, context):
             df.to_sql(survey_tbl,engine,if_exists='append',index=False)
         else:
             print("this DF is invalid, send failure text")
+            print(errs)
         # remove the processed object
         s3.Object(bucket,key).delete()
 
