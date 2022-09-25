@@ -22,9 +22,21 @@ endpoint = os.environ['DB_DOMAIN']
 username = os.environ['DB_USERNAME']
 password = os.environ['DB_PASS']
 database_name = os.environ['DB_NAME']
+
+
+
+# S3 INIT
+s3 = boto3.resource('s3')
+s3_client = boto3.client('s3')
+my_bucket = s3.Bucket(bucket)
+
+# SQL INIT
+engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}/{}'.format(username,password,endpoint,database_name)).connect()
+sql_tbl = pd.read_sql_table(survey_tbl, engine)
+print("this confirms that the SQL table works properly:",sql_tbl.head())
 ## DB SCHEMA DEFINITION
 schema = Schema([
-    Column('SiteID', [validation.InListValidation(['Walker (San Jose)'])]),
+    Column('SiteID', [validation.InListValidation(sql_tbl['SiteID'].unique())]),
     Column('contactID',[]),
     Column('Survey_Month',[validation.InRangeValidation(0,12)]),
     Column('Survey_Year',[validation.InRangeValidation(2000,2050)]),
@@ -78,21 +90,6 @@ schema = Schema([
     Column('Admission_Reason_Other',[]),
     Column('Admission_Reason_Unknown',[]),
 ])
-
-
-# S3 INIT
-s3 = boto3.resource('s3')
-s3_client = boto3.client('s3')
-my_bucket = s3.Bucket(bucket)
-
-# SQL INIT
-engine = sqlalchemy.create_engine('mysql+pymysql://{}:{}@{}/{}'.format(username,password,endpoint,database_name)).connect()
-sql_tbl = pd.read_sql_table(survey_tbl, engine)
-print("this confirms that the SQL table works properly:",sql_tbl.head())
-# connection = pymysql.connect(
-#     host=endpoint, user=username, passwd=password, db=database_name
-# )
-# print("conn:",connection)
 
 ## ******* FUNCTIONS ****** ##
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
