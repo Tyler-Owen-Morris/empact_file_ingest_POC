@@ -117,10 +117,6 @@ def lambda_handler(event, context):
             print("row",row)
             print("idx", idx)
             resp = validate_row(row)
-            exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == '"+row['SiteID']+"'")
-            print(exi.shape)
-            if exi.shape[0] > 0:
-                resp.append("Entry already exists in dataframe")
             if len(resp) > 0:
                 errs.append((idx,resp))
         # Validate the data doesn't already exist in the database
@@ -215,6 +211,10 @@ def validate_row(row):
         resp.append("Population counts to not match reported totals")
     if adm != Total_Adm_Prior_Month:
         resp.append("Admission counts do not match reported totals")
+    exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == '"+row['SiteID']+"'")
+    print("exists:",exi.shape)
+    if exi.shape[0] > 0:
+        resp.append("Row data already exists")
     return resp
 
 
