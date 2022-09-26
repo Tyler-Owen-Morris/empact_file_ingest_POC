@@ -139,9 +139,9 @@ def lambda_handler(event, context):
         # remove the processed object
         copy_source = {
             'Bucket': bucket,
-            'Key': key
+            'Key': mykey
         }
-        obj = bucket.Object("/archive/"+key)
+        obj = my_bucket.Object('/archive/'+mykey)
         obj.copy(copy_source)
         s3.Object(bucket,mykey).delete()
 
