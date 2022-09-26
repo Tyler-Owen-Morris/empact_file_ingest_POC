@@ -112,8 +112,15 @@ def lambda_handler(event, context):
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
         valid = schema.validate(df)
-        print("len valid:",len(valid))
-        print("valid",valid)
+        # print("len valid:",len(valid))
+        # print("valid",valid)
+        if len(valid) > 0:
+            ds =[]
+            for err in valid:
+                ds.append(str(err))
+            send_failure_email([(0,ds)])
+            archive_file(mykey)
+            continue
         ### Validate the file/contents
         print("dataframe:",df)
         errs = []
@@ -139,13 +146,7 @@ def lambda_handler(event, context):
             print(errs)
             send_failure_email(errs)
         #copy the processed object to archive folder.
-        copy_source = {
-            'Bucket': bucket,
-            'Key': mykey
-        }
-        newkey = ".".join([mykey.split('.')[0]+datetime.now().strftime("|%m-%d-%Y %I:%M:%S"),mykey.split('.')[-1]])
-        s3.meta.client.copy(copy_source, bucket, 'archive/'+newkey)
-        s3.Object(bucket,mykey).delete()
+        archive_file(mykey)
 
 
 ## UTILITY FUNCTIONS
@@ -227,6 +228,15 @@ def validate_row(row):
     if exi.shape[0] > 0:
         resp.append("Row data already exists")
     return resp
+
+def archive_file(key):
+    copy_source = {
+        'Bucket': bucket,
+        'Key': key
+    }
+    newkey = ".".join([key.split('.')[0]+datetime.now().strftime("|%m-%d-%Y %I:%M:%S"),key.split('.')[-1]])
+    s3.meta.client.copy(copy_source, bucket, 'archive/'+newkey)
+    s3.Object(bucket,key).delete()
 
 def send_failure_email(errors):
     sender = "tmorris+sender@walkerinfo.com"
