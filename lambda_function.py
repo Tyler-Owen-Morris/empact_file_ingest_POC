@@ -278,10 +278,7 @@ def send_failure_email(errors):
         row = str(err[0]+1)
         itmls = ", ".join(err[1])
         er_lst += "Row "+ row +" contains the error(s): "+itmls +"\n\n"
-    ebody = '''Hello,\n 
-        The file you were attempting to upload to Empact was rejected with the following errors:\n \n
-        {}\n
-        Please fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
+    ebody = '''Hello,\n The file you were attempting to upload to Empact was rejected with the following errors:\n\n{}\nPlease fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
     '''.format(er_lst)
 
     try:
@@ -316,8 +313,7 @@ def send_success_email(count):
     recipient = "tmorris+recieve@walkerinfo.com"
     subj = "File ingested successfully"
     
-    ebody = '''Hello,\n 
-        Thank you for submitting your file to Empact. We successfully added {} entries to our database.\n If you have any follow up questions you may contact Jason@empact.solutions.
+    ebody = '''Hello,\n Thank you for submitting your file to Empact. We successfully added {} entries to our database.\n If you have any follow up questions you may contact Jason@empact.solutions.
     '''.format(str(count))
 
     try:
