@@ -97,10 +97,12 @@ schema = Schema([
 ## ******* FUNCTIONS ****** ##
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
 ## This is the entry point for the API endpoint being called.
+file_err = []
 def lambda_handler(event, context):
     print("event:",event)
     print("content:",context)
     # get the objects in the bucket
+    valid_rows = 0
     keys = read_from_s3()
     # Iterate through the keys
     for key in keys:
@@ -118,7 +120,7 @@ def lambda_handler(event, context):
             ds =[]
             for err in valid:
                 ds.append(str(err))
-            send_failure_email([(0,ds)])
+            send_failure_email([(-1,ds)])
             archive_file(mykey)
             continue
         ### Validate the file/contents
@@ -130,6 +132,8 @@ def lambda_handler(event, context):
             resp = validate_row(row)
             if len(resp) > 0:
                 errs.append((idx,resp))
+            else:
+                valid_rows += 1
         # Validate the data doesn't already exist in the database
         if len(errs) == 0:
             # Write the results to SQL
@@ -141,9 +145,11 @@ def lambda_handler(event, context):
             df['Admissions_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['A2_Race_White'],int)) else 'No']
             df['Adm_Report_Eth'] = [1 if (isinstance(df['A2_Race_White'],int)) else 2]
             df.to_sql(survey_tbl,engine,if_exists='append',index=False)
+            send_success_email(valid_rows)
         else:
             print("this DF is invalid, send failure text")
             print(errs)
+            file_err.append(errs)
             send_failure_email(errs)
         #copy the processed object to archive folder.
         archive_file(mykey)
@@ -246,12 +252,48 @@ def send_failure_email(errors):
     for err in errors:
         row = str(err[0]+1)
         itmls = ", ".join(err[1])
-        er_lst += row +" contains the errors: "+itmls +"\n\n"
+        er_lst += "Row "+ row +" contains the error(s): "+itmls +"\n\n"
     ebody = '''Hello,\n 
         The file you were attempting to upload to Empact was rejected with the following errors:\n \n
         {}\n
         Please fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
     '''.format(er_lst)
+
+    try:
+        respon = ses_client.send_email(
+            Source=sender,
+            Destination={
+                'ToAddresses': [
+                    recipient,
+                ]
+            },
+            Message={
+                'Subject': {
+                    'Data': subj,
+                    'Charset': 'UTF-8'
+                },
+                'Body': {
+                    'Text': {
+                        'Data': ebody,
+                        'Charset': 'UTF-8'
+                    }
+                }
+            },
+        )
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print("email sent successfully")
+        print(respon['MessageId'])
+
+def send_success_email(count):
+    sender = "tmorris+sender@walkerinfo.com"
+    recipient = "tmorris+recieve@walkerinfo.com"
+    subj = "File ingested successfully"
+    
+    ebody = '''Hello,\n 
+        Thank you for submitting your file to Empact. We successfully added {} entries to our database.\n If you have any follow up questions you may contact Jason@empact.solutions.
+    '''.format(str(count))
 
     try:
         respon = ses_client.send_email(
