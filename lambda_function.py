@@ -1,6 +1,6 @@
 import pymysql
 import os
-import datetime
+from datetime import datetime
 import uuid
 from random import randint
 from io import StringIO, BytesIO
