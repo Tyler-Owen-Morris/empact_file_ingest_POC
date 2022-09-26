@@ -133,9 +133,10 @@ def lambda_handler(event, context):
         else:
             print("this DF is invalid, send failure text")
             print(errs)
-        # remove the processed object
+        #copy the processed object to archive folder.
         obj = s3.Object(bucket,'archive/'+key)
-        obj.put(Body=StringIO(body))
+        obj.put(Body=body)
+        # remove the processed object
         s3.Object(bucket,key).delete()
 
 
