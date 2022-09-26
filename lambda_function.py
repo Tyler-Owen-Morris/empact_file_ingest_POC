@@ -134,8 +134,8 @@ def lambda_handler(event, context):
             print("this DF is invalid, send failure text")
             print(errs)
         # remove the processed object
-        s3.Object(bucket,'archive/'+key,).copy_from(CopySource=bucket+key)
-        #s3_client.copy_object(Bucket=bucket,CopySource=key,Key="archive/"+key)
+        obj = s3.Object(bucket,'archive/'+key)
+        obj.put(Body=StringIO(body))
         s3.Object(bucket,key).delete()
 
 
