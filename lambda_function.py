@@ -139,7 +139,7 @@ def lambda_handler(event, context):
             'Bucket': bucket,
             'Key': mykey
         }
-        s3.meta.client.copy(copy_source, bucket, '/archive/'+mykey)
+        s3.meta.client.copy(copy_source, bucket, 'archive/'+mykey)
         s3.Object(bucket,mykey).delete()
 
 
