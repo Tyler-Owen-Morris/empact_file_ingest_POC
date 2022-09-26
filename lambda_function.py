@@ -158,7 +158,6 @@ def read_from_s3():
 
 def validate_row(row):
     resp = []
-    #row.fillna(0,inplace=True)
     # Month/year
     mon = int(row['Survey_Month'])
     yr = int(row['Survey_Year'])
