@@ -3,7 +3,7 @@ import os
 import datetime
 import uuid
 from random import randint
-from io import StringIO
+from io import StringIO, BytesIO
 import sqlalchemy
 import pymysql
 import boto3
@@ -95,8 +95,8 @@ schema = Schema([
 # AWS LAMBDA SETUP TARGETS THE 'lambda_handler' FUNCTION IN THE 'lambda_function.py' FILE.
 ## This is the entry point for the API endpoint being called.
 def lambda_handler(event, context):
-    #print("event:",event)
-    #print("content:",context)
+    print("event:",event)
+    print("content:",context)
     # get the objects in the bucket
     keys = read_from_s3()
     # Iterate through the keys
@@ -134,8 +134,8 @@ def lambda_handler(event, context):
             print("this DF is invalid, send failure text")
             print(errs)
         #copy the processed object to archive folder.
-        obj = s3.Object(bucket,'archive/'+key)
-        obj.put_object(Body=body)
+        #obj = s3.Object(bucket,'/archive/'+key).put(Body=body)
+        s3.Bucket(bucket).download_file(key,'/tmp/'+key)
         # remove the processed object
         s3.Object(bucket,key).delete()
 
