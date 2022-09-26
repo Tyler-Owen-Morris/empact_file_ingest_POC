@@ -141,7 +141,6 @@ def lambda_handler(event, context):
             'Bucket': bucket,
             'Key': key
         }
-        bucket = s3.Bucket(bucket)
         obj = bucket.Object("/archive/"+key)
         obj.copy(copy_source)
         s3.Object(bucket,mykey).delete()
