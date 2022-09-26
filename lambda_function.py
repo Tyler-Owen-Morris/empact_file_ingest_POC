@@ -137,12 +137,13 @@ def lambda_handler(event, context):
         else:
             print("this DF is invalid, send failure text")
             print(errs)
+            send_failure_email(errs)
         #copy the processed object to archive folder.
         copy_source = {
             'Bucket': bucket,
             'Key': mykey
         }
-        newkey = ".".join([mykey.split('.')[0]+datetime.now().strftime("|%m-%d-%Y %I:%M:%S"),mykey.split('.')[1]])
+        newkey = ".".join([mykey.split('.')[0]+datetime.now().strftime("|%m-%d-%Y %I:%M:%S"),mykey.split('.')[-1]])
         s3.meta.client.copy(copy_source, bucket, 'archive/'+newkey)
         s3.Object(bucket,mykey).delete()
 
