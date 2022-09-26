@@ -1,3 +1,4 @@
+from urllib import response
 import pymysql
 import os
 from datetime import datetime
@@ -9,6 +10,7 @@ import pymysql
 import boto3
 import pandas as pd
 from pandas_schema import Column,Schema,validation
+from botocore.exceptions import ClientError
 
 
 ## **** CONFIGURATION VARIABLES **** ##
@@ -28,6 +30,7 @@ database_name = os.environ['DB_NAME']
 # S3 INIT
 s3 = boto3.resource('s3')
 s3_client = boto3.client('s3')
+ses_client = boto3.client('ses')
 my_bucket = s3.Bucket(bucket)
 
 # SQL INIT
@@ -224,5 +227,44 @@ def validate_row(row):
         resp.append("Row data already exists")
     return resp
 
+def send_failure_email(errors):
+    sender = "tmorris+sender@walkerinfo.com"
+    recipient = "tmorris+recieve@walkerinfo.com"
+    subj = "Error Ingesting your file"
+    er_lst = ''
+    for err in errors:
+        row = str(err[0]+1)
+        itmls = ", ".join(err[1])
+        er_lst += row +" contains the errors: "+itmls +"\n\n"
+    ebody = '''Hello,\n 
+        The file you were attempting to upload to Empact was rejected with the following errors:\n \n
+        {}\n
+        Please fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
+    '''.format(er_lst)
 
-    
+    try:
+        respon = ses_client.send_email(
+            Source=sender,
+            Destination={
+                'ToAddresses': [
+                    recipient,
+                ]
+            },
+            Message={
+                'Subject': {
+                    'Data': subj,
+                    'Charset': 'UTF-8'
+                },
+                'Body': {
+                    'Text': {
+                        'Data': ebody,
+                        'Charset': 'UTF-8'
+                    }
+                }
+            },
+        )
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print("email sent successfully")
+        print(respon['MessageId'])
