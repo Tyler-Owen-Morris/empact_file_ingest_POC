@@ -135,11 +135,11 @@ def lambda_handler(event, context):
             print("this DF is invalid, send failure text")
             print(errs)
         #copy the processed object to archive folder.
-        copy_source = {
-            'Bucket': bucket,
-            'Key': mykey
-        }
-        s3.meta.client.copy(copy_source, bucket, 'archive/'+mykey)
+        # copy_source = {
+        #     'Bucket': bucket,
+        #     'Key': mykey
+        # }
+        # s3.meta.client.copy(copy_source, bucket, 'archive/'+mykey)
         s3.Object(bucket,mykey).delete()
 
 
@@ -151,7 +151,7 @@ def read_from_s3():
     for obj in my_bucket.objects.all():
         print("My bucket object: ",obj)
         # print("key",obj.key)
-        if obj.key != 'archive/':
+        if 'archive/' not in obj.key:
             ret.append(obj.key)
     return ret
 
