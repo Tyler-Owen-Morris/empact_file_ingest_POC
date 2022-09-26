@@ -135,8 +135,11 @@ def lambda_handler(event, context):
             print(errs)
         #copy the processed object to archive folder.
         #obj = s3.Object(bucket,'/archive/'+key).put(Body=body)
-        s3.Bucket(bucket).download_file(key,'/tmp/'+key)
-        s3.upload_file("/tmp/"+key,bucket,key)
+        copy_source = {
+            'Bucket' : bucket,
+            'Key': key
+        }
+        s3.meta.client.copy(copy_source,bucket,'/archive/'+key)
         # remove the processed object
         s3.Object(bucket,key).delete()
 
