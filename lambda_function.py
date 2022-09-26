@@ -139,11 +139,11 @@ def lambda_handler(event, context):
             # Write the results to SQL
             print("modify this DF and write it")
             df['ResponseID'] = "AWS_"+uuid.uuid4().hex
-            df['Population_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['P2_Race_White'],int)) else 'No']
-            df['Population_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['P1_Race_White'],int)) else 'No']
-            df['Admissions_Prior_Month_RE_YN'] = ['Yes' if (isinstance(df['A1_Race_White'],int)) else 'No']
-            df['Admissions_Ethn_Separate_YN'] = ['Yes' if (isinstance(df['A2_Race_White'],int)) else 'No']
-            df['Adm_Report_Eth'] = [1 if (isinstance(df['A2_Race_White'],int)) else 2]
+            df['Population_Prior_Month_RE_YN'] = df.apply(pop_prior_month_cond,axis=1) 
+            df['Population_Ethn_Separate_YN'] = df.apply(pop_eth_sep_cond,axis=1)
+            df['Admissions_Prior_Month_RE_YN'] = df.apply(adm_prior_month_cond,axis=1)
+            df['Admissions_Ethn_Separate_YN'] = df.apply(adm_eth_sep_cond,axis=1)
+            df['Adm_Report_Eth'] = df.apply(adm_eth_sep_cond,axis=1)
             df.to_sql(survey_tbl,engine,if_exists='append',index=False)
             send_success_email(valid_rows)
         else:
@@ -166,6 +166,31 @@ def read_from_s3():
         if 'archive/' not in obj.key:
             ret.append(obj.key)
     return ret
+
+# functions to derrive values from incoming file data
+def pop_prior_month_cond(s):
+    if isinstance(s.P1_Race_White,int) or isinstance(s.P1_Race_Black,int) or isinstance(s.P1_Race_Hisp,int) or isinstance(s.P1_Race_Asian,int) or isinstance(s.P1_Race_Native,int) or isinstance(s.P1_Race_Pacisl,int) or isinstance(s.P1_Race_2Plus,int) or isinstance(s.P1_Race_Other,int) or isinstance(s.P1_Race_Unknown,int) or isinstance(s.P1_Race_Refused,int):
+        return 'Yes'
+    else:
+        return 'No'
+    
+def pop_eth_sep_cond(s):
+    if isinstance(s.P2_Race_White,int) or isinstance(s.P2_Race_Black,int) or isinstance(s.P2_Race_Hisp,int) or isinstance(s.P2_Race_Asian,int) or isinstance(s.P2_Race_Native,int) or isinstance(s.P2_Race_Pacisl,int) or isinstance(s.P2_Race_2Plus,int) or isinstance(s.P2_Race_Other,int) or isinstance(s.P2_Race_Unknown,int) or isinstance(s.P2_Race_Refused,int):
+        return 'Yes'
+    else:
+        return 'No'
+    
+def adm_prior_month_cond(s):
+    if isinstance(s.A1_Race_White,int) or isinstance(s.A1_Race_Black,int) or isinstance(s.A1_Race_Hisp,int) or isinstance(s.A1_Race_Asian,int) or isinstance(s.A1_Race_Native,int) or isinstance(s.A1_Race_Pacisl,int) or isinstance(s.A1_Race_2Plus,int) or isinstance(s.A1_Race_Other,int) or isinstance(s.A1_Race_Unknown,int) or isinstance(s.A1_Race_Refused,int):
+        return 'Yes'
+    else:
+        return 'No'
+
+def adm_eth_sep_cond(s):
+    if isinstance(s.A2_Race_White,int) or isinstance(s.A2_Race_Black,int) or isinstance(s.A2_Race_Hisp,int) or isinstance(s.A2_Race_Asian,int) or isinstance(s.A2_Race_Native,int) or isinstance(s.A2_Race_Pacisl,int) or isinstance(s.A2_Race_2Plus,int) or isinstance(s.A2_Race_Other,int) or isinstance(s.A2_Race_Unknown,int) or isinstance(s.A2_Race_Refused,int):
+        return 'Yes'
+    else:
+        return 'No'
 
 def validate_row(row):
     resp = []
