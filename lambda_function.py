@@ -278,7 +278,7 @@ def send_failure_email(errors):
         row = str(err[0]+1)
         itmls = ", ".join(err[1])
         er_lst += "Row "+ row +" contains the error(s): "+itmls +"\n\n"
-    ebody = '''Hello,\n The file you were attempting to upload to Empact was rejected with the following errors:\n\n{}\nPlease fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
+    ebody = '''Hello,\n\nThe file you were attempting to upload to Empact was rejected with the following errors:\n\n{}Please fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
     '''.format(er_lst)
 
     try:
