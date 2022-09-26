@@ -101,7 +101,8 @@ def lambda_handler(event, context):
     keys = read_from_s3()
     # Iterate through the keys
     for key in keys:
-        csv_obj = s3_client.get_object(Bucket=bucket, Key=key)
+        mykey = key
+        csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
         print("gotten obj:",csv_obj)
         body = csv_obj['Body'].read().decode('utf-8')
         print("body:",body)
@@ -134,14 +135,16 @@ def lambda_handler(event, context):
             print("this DF is invalid, send failure text")
             print(errs)
         #copy the processed object to archive folder.
-        #obj = s3.Object(bucket,'/archive/'+key).put(Body=body)
+        #obj = s3.Object(bucket,'/archive/'+mykey).put(Body=body)
+        # remove the processed object
         copy_source = {
-            'Bucket' : bucket,
+            'Bucket': bucket,
             'Key': key
         }
-        s3.meta.client.copy(copy_source,bucket,'/archive/'+key)
-        # remove the processed object
-        s3.Object(bucket,key).delete()
+        bucket = s3.Bucket(bucket)
+        obj = bucket.Object("/archive/"+key)
+        obj.copy(copy_source)
+        s3.Object(bucket,mykey).delete()
 
 
 ## UTILITY FUNCTIONS
