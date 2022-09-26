@@ -135,15 +135,11 @@ def lambda_handler(event, context):
             print("this DF is invalid, send failure text")
             print(errs)
         #copy the processed object to archive folder.
-        #obj = s3.Object(bucket,'/archive/'+mykey).put(Body=body)
-        # remove the processed object
-        # copy_source = {
-        #     'Bucket': bucket,
-        #     'Key': mykey
-        # }
-        # obj = my_bucket.Object('/archive/'+mykey)
-        # print(copy_source)
-        # obj.copy(copy_source)
+        copy_source = {
+            'Bucket': bucket,
+            'Key': mykey
+        }
+        s3.meta.client.copy(copy_source, bucket, '/archive/'+mykey)
         s3.Object(bucket,mykey).delete()
 
 
