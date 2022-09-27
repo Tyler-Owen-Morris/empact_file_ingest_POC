@@ -41,7 +41,7 @@ print("this confirms that the SQL table works properly:",sql_tbl.head())
 schema = Schema([
     Column('SiteID', [validation.InListValidation(sql_tbl['SiteID'].unique())]),
     Column('contactID',[]),
-    Column('Survey_Month',[validation.InRangeValidation(0,12)]),
+    Column('Survey_Month',[validation.InRangeValidation(1,12)]),
     Column('Survey_Year',[validation.InRangeValidation(2000,2050)]),
     Column('DetPop_First_Day',[]),
     Column('Total_Adm_Prior_Month',[]),
@@ -85,7 +85,6 @@ schema = Schema([
     Column('P2_Race_Other',[]),
     Column('P2_Race_Unknown',[]),
     Column('P2_Race_Refused',[]),
-    Column('Admission_Reason_Unable',[]),
     Column('Admission_Reason_New_Offense',[]),
     Column('Admission_Reason_Technical',[]),
     Column('Admission_Reason_Technical',[]),
@@ -144,6 +143,7 @@ def lambda_handler(event, context):
             df['Admissions_Prior_Month_RE_YN'] = df.apply(adm_prior_month_cond,axis=1)
             df['Admissions_Ethn_Separate_YN'] = df.apply(adm_eth_sep_cond,axis=1)
             df['Adm_Report_Eth'] = df.apply(adm_eth_sep_cond,axis=1)
+            df['Recorded_Date'] = df.apply(get_formatted_datetime,axis=1)
             df.to_sql(survey_tbl,engine,if_exists='append',index=False)
             send_success_email(valid_rows)
         else:
@@ -191,6 +191,9 @@ def adm_eth_sep_cond(s):
         return 'Yes'
     else:
         return 'No'
+
+def get_formatted_datetime():
+    return datetime.now().strftime("%m/%d/%Y %I:%M:%S")
 
 def validate_row(row):
     resp = []
