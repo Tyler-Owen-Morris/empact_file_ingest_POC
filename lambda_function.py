@@ -112,19 +112,18 @@ def lambda_handler(event, context):
         print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
+        ### Validate the file/contents
+        print("dataframe:",df)
         valid = schema.validate(df)
         # print("len valid:",len(valid))
         # print("valid",valid)
+        errs = []
         if len(valid) > 0:
             ds =[]
             for err in valid:
                 ds.append(str(err))
-            send_failure_email([(-1,ds)])
-            archive_file(mykey)
+            errs.append((-1,ds))
             continue
-        ### Validate the file/contents
-        print("dataframe:",df)
-        errs = []
         for idx, row in df.iterrows():
             print("row",row)
             print("idx", idx)
