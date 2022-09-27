@@ -123,7 +123,6 @@ def lambda_handler(event, context):
             for err in valid:
                 ds.append(str(err))
             errs.append((-1,ds))
-            continue
         for idx, row in df.iterrows():
             print("row",row)
             print("idx", idx)
