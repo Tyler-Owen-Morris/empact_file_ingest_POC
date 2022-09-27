@@ -191,7 +191,7 @@ def adm_eth_sep_cond(s):
     else:
         return 'No'
 
-def get_formatted_datetime():
+def get_formatted_datetime(s):
     return datetime.now().strftime("%m/%d/%Y %I:%M:%S")
 
 def validate_row(row):
