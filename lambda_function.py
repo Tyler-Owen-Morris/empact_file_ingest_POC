@@ -39,7 +39,7 @@ sql_tbl = pd.read_sql_table(survey_tbl, engine)
 print("this confirms that the SQL table works properly:",sql_tbl.head())
 ## DB SCHEMA DEFINITION
 schema = Schema([
-    Column('SiteID', [validation.InListValidation(sql_tbl['SiteID'].unique(),"The SiteID does not match any known site ID.")]),
+    Column('SiteID', [validation.InListValidation(sql_tbl['SiteID'].unique())]),
     Column('contactID',[]),
     Column('Survey_Month',[validation.InRangeValidation(1,13)]),
     Column('Survey_Year',[validation.InRangeValidation(2000,2050)]),
