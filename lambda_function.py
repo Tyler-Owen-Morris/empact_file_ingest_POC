@@ -127,7 +127,7 @@ def lambda_handler(event, context):
                     clean_err = str(err).split("options")[0]+"options"
                 ds.append(clean_err)
             # This apppends the structure errors to the main list of errors
-            errs.append((-1,ds))
+            errs.append((err.row+1,ds))
         try:
             for idx, row in df.iterrows():
                 print("row",row)
