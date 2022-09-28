@@ -121,16 +121,25 @@ def lambda_handler(event, context):
         if len(valid) > 0:
             ds =[]
             for err in valid:
-                ds.append(str(err))
+                # This sanitizes the full SiteID list from being returned in the email
+                clean_err = err.value
+                if "options" in err.value:
+                    clean_err = str(err).split("options")[0]+"options"
+                ds.append(clean_err)
+            # This apppends the structure errors to the main list of errors
             errs.append((-1,ds))
-        for idx, row in df.iterrows():
-            print("row",row)
-            print("idx", idx)
-            resp = validate_row(row)
-            if len(resp) > 0:
-                errs.append((idx,resp))
-            else:
-                valid_rows += 1
+        try:
+            for idx, row in df.iterrows():
+                print("row",row)
+                print("idx", idx)
+                resp = validate_row(row)
+                if len(resp) > 0:
+                    errs.append((idx,resp))
+                else:
+                    valid_rows += 1
+        except:
+            print("this is passing")
+            pass
         # Validate the data doesn't already exist in the database
         if len(errs) == 0:
             # Write the results to SQL
