@@ -183,18 +183,21 @@ def pop_prior_month_cond(s):
         return 'No'
     
 def pop_eth_sep_cond(s):
+    print("Pop eth in:",s)
     if isinstance(s.P2_Race_White,int) or isinstance(s.P2_Race_Black,int) or isinstance(s.P2_Race_Hisp,int) or isinstance(s.P2_Race_Asian,int) or isinstance(s.P2_Race_Native,int) or isinstance(s.P2_Race_Pacisl,int) or isinstance(s.P2_Race_2Plus,int) or isinstance(s.P2_Race_Other,int) or isinstance(s.P2_Race_Unknown,int) or isinstance(s.P2_Race_Refused,int):
         return 'Yes'
     else:
         return 'No'
     
 def adm_prior_month_cond(s):
+    print("adm YN in:",s)
     if isinstance(s.A1_Race_White,int) or isinstance(s.A1_Race_Black,int) or isinstance(s.A1_Race_Hisp,int) or isinstance(s.A1_Race_Asian,int) or isinstance(s.A1_Race_Native,int) or isinstance(s.A1_Race_Pacisl,int) or isinstance(s.A1_Race_2Plus,int) or isinstance(s.A1_Race_Other,int) or isinstance(s.A1_Race_Unknown,int) or isinstance(s.A1_Race_Refused,int):
         return 'Yes'
     else:
         return 'No'
 
 def adm_eth_sep_cond(s):
+    print("adm eth sep:",s)
     if isinstance(s.A2_Race_White,int) or isinstance(s.A2_Race_Black,int) or isinstance(s.A2_Race_Hisp,int) or isinstance(s.A2_Race_Asian,int) or isinstance(s.A2_Race_Native,int) or isinstance(s.A2_Race_Pacisl,int) or isinstance(s.A2_Race_2Plus,int) or isinstance(s.A2_Race_Other,int) or isinstance(s.A2_Race_Unknown,int) or isinstance(s.A2_Race_Refused,int):
         return 'Yes'
     else:
