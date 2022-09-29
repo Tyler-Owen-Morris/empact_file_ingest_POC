@@ -167,7 +167,7 @@ def read_from_s3():
     my_bucket = s3.Bucket(bucket)
     ret = []
     for obj in my_bucket.objects.all():
-        print("My bucket object: ",obj)
+        #print("My bucket object: ",obj)
         # print("key",obj.key)
         if 'archive/' not in obj.key:
             ret.append(obj.key)
@@ -175,23 +175,23 @@ def read_from_s3():
 
 # functions to derrive values from incoming file data
 def pop_prior_month_cond(s):
-    print("pop prior month in:",type(s))
-    print("pop is P1 White an int:",isinstance(s.P1_Race_White,(int,float)))
+    # print("pop prior month in:",type(s))
+    print("pop is P1 White an int:",isinstance(s.P1_Race_White,(int,float)),type(s.P1_Race_White))
     if isinstance(s.P1_Race_White,(int,float)) or isinstance(s.P1_Race_Black,(int,float)) or isinstance(s.P1_Race_Hisp,(int,float)) or isinstance(s.P1_Race_Asian,(int,float)) or isinstance(s.P1_Race_Native,(int,float)) or isinstance(s.P1_Race_Pacisl,(int,float)) or isinstance(s.P1_Race_2Plus,(int,float)) or isinstance(s.P1_Race_Other,(int,float)) or isinstance(s.P1_Race_Unknown,(int,float)) or isinstance(s.P1_Race_Refused,(int,float)):
         return 'Yes'
     else:
         return 'No'
     
 def pop_eth_sep_cond(s):
-    print("Pop eth in:",type(s))
-    print("pop eth is P2 White an int:",isinstance(s.P2_Race_White,(int,float)))
+    # print("Pop eth in:",type(s))
+    print("pop eth is P2 White an int:",isinstance(s.P2_Race_White,(int,float)),type(s.P2_Race_White))
     if isinstance(s.P2_Race_White,(int,float)) or isinstance(s.P2_Race_Black,(int,float)) or isinstance(s.P2_Race_Hisp,(int,float)) or isinstance(s.P2_Race_Asian,(int,float)) or isinstance(s.P2_Race_Native,(int,float)) or isinstance(s.P2_Race_Pacisl,(int,float)) or isinstance(s.P2_Race_2Plus,(int,float)) or isinstance(s.P2_Race_Other,(int,float)) or isinstance(s.P2_Race_Unknown,(int,float)) or isinstance(s.P2_Race_Refused,(int,float)):
         return 'Yes'
     else:
         return 'No'
     
 def adm_prior_month_cond(s):
-    print("adm YN in:",type(s))
+    # print("adm YN in:",type(s))
     print("adm can report is A1 White an int:",isinstance(s.A1_Race_White,int))
     if isinstance(s.A1_Race_White,int) or isinstance(s.A1_Race_Black,int) or isinstance(s.A1_Race_Hisp,int) or isinstance(s.A1_Race_Asian,int) or isinstance(s.A1_Race_Native,int) or isinstance(s.A1_Race_Pacisl,int) or isinstance(s.A1_Race_2Plus,int) or isinstance(s.A1_Race_Other,int) or isinstance(s.A1_Race_Unknown,int) or isinstance(s.A1_Race_Refused,int):
         return 'Yes'
@@ -199,7 +199,7 @@ def adm_prior_month_cond(s):
         return 'No'
 
 def adm_eth_sep_cond(s):
-    print("adm eth sep:",type(s))
+    # print("adm eth sep:",type(s))
     print("adm eth is A2 White an int:",isinstance(s.A2_Race_White,int))
     if isinstance(s.A2_Race_White,int) or isinstance(s.A2_Race_Black,int) or isinstance(s.A2_Race_Hisp,int) or isinstance(s.A2_Race_Asian,int) or isinstance(s.A2_Race_Native,int) or isinstance(s.A2_Race_Pacisl,int) or isinstance(s.A2_Race_2Plus,int) or isinstance(s.A2_Race_Other,int) or isinstance(s.A2_Race_Unknown,int) or isinstance(s.A2_Race_Refused,int):
         return 'Yes'
