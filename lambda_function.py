@@ -6,7 +6,6 @@ import uuid
 from random import randint
 from io import StringIO, BytesIO
 import sqlalchemy
-import pymysql
 import boto3
 import pandas as pd
 from pandas_schema import Column,Schema,validation
@@ -122,8 +121,8 @@ def lambda_handler(event, context):
             ds =[]
             for err in valid:
                 # This sanitizes the full SiteID list from being returned in the email
-                clean_err = err.value
-                if "options" in err.value:
+                clean_err = str(err)
+                if "options" in str(err):
                     clean_err = str(err).split("options")[0]+"options"
                 ds.append(clean_err)
             # This apppends the structure errors to the main list of errors
@@ -282,13 +281,13 @@ def archive_file(key):
 def send_failure_email(errors):
     sender = "tmorris+sender@walkerinfo.com"
     recipient = "tmorris+recieve@walkerinfo.com"
-    subj = "Error Ingesting your file"
+    subj = "ERROR: JDAI Monthly Detention Survey Not Submitted"
     er_lst = ''
     for err in errors:
         row = str(err[0]+1)
         itmls = ", ".join(err[1])
         er_lst += "Row "+ row +" contains the error(s): "+itmls +"\n\n"
-    ebody = '''Hello,\n\nThe file you were attempting to upload to Empact was rejected with the following errors:\n\n{}Please fix these errors and upload the file again. if you are still having trouble you may contact Jason@empact.solutions.
+    ebody = '''Whoops! Looks like something went wrong with your JDAI Monthly Detention Survey data submission. The file you attempted to submit had the following errors:\n\n{}Please fix these errors and upload the file again. If you are still having trouble, please email jdaidata@empact.solutions\n\nThank you again for your continued participation!\nEmpact Solutions Team
     '''.format(er_lst)
 
     try:
