@@ -97,22 +97,21 @@ schema = Schema([
 ## This is the entry point for the API endpoint being called.
 file_err = []
 def lambda_handler(event, context):
-    print("event:",event)
-    print("content:",context)
+    # print("event:",event)
+    # print("content:",context)
     # get the objects in the bucket
-    valid_rows = 0
     keys = read_from_s3()
     # Iterate through the keys
     for key in keys:
         mykey = key
         csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
-        print("gotten obj:",csv_obj)
+        #print("gotten obj:",csv_obj)
         body = csv_obj['Body'].read().decode('utf-8')
-        print("body:",body)
+        #print("body:",body)
         #csv_string = body.read().decode('utf-8')
         df = pd.read_csv(StringIO(body), sep=",")
         ### Validate the file/contents
-        print("dataframe:",df)
+        #print("dataframe:",df)
         valid = schema.validate(df)
         # print("len valid:",len(valid))
         # print("valid",valid)
@@ -137,7 +136,6 @@ def lambda_handler(event, context):
                     errs.append((idx,resp))
                 else:
                     succs.append((row['SiteID'], str(row['Survey_Month']) +"/"+str(row['Survey_Year'])))
-                    valid_rows += 1
         except:
             print("this is passing")
             pass
@@ -177,27 +175,32 @@ def read_from_s3():
 
 # functions to derrive values from incoming file data
 def pop_prior_month_cond(s):
+    print("pop prior month in:",type(s))
+    print("pop is P1 White an int:",isinstance(s.P1_Race_White,int))
     if isinstance(s.P1_Race_White,int) or isinstance(s.P1_Race_Black,int) or isinstance(s.P1_Race_Hisp,int) or isinstance(s.P1_Race_Asian,int) or isinstance(s.P1_Race_Native,int) or isinstance(s.P1_Race_Pacisl,int) or isinstance(s.P1_Race_2Plus,int) or isinstance(s.P1_Race_Other,int) or isinstance(s.P1_Race_Unknown,int) or isinstance(s.P1_Race_Refused,int):
         return 'Yes'
     else:
         return 'No'
     
 def pop_eth_sep_cond(s):
-    print("Pop eth in:",s)
+    print("Pop eth in:",type(s))
+    print("pop eth is P2 White an int:",isinstance(s.P2_Race_White,int))
     if isinstance(s.P2_Race_White,int) or isinstance(s.P2_Race_Black,int) or isinstance(s.P2_Race_Hisp,int) or isinstance(s.P2_Race_Asian,int) or isinstance(s.P2_Race_Native,int) or isinstance(s.P2_Race_Pacisl,int) or isinstance(s.P2_Race_2Plus,int) or isinstance(s.P2_Race_Other,int) or isinstance(s.P2_Race_Unknown,int) or isinstance(s.P2_Race_Refused,int):
         return 'Yes'
     else:
         return 'No'
     
 def adm_prior_month_cond(s):
-    print("adm YN in:",s)
+    print("adm YN in:",type(s))
+    print("adm can report is A1 White an int:",isinstance(s.A1_Race_White,int))
     if isinstance(s.A1_Race_White,int) or isinstance(s.A1_Race_Black,int) or isinstance(s.A1_Race_Hisp,int) or isinstance(s.A1_Race_Asian,int) or isinstance(s.A1_Race_Native,int) or isinstance(s.A1_Race_Pacisl,int) or isinstance(s.A1_Race_2Plus,int) or isinstance(s.A1_Race_Other,int) or isinstance(s.A1_Race_Unknown,int) or isinstance(s.A1_Race_Refused,int):
         return 'Yes'
     else:
         return 'No'
 
 def adm_eth_sep_cond(s):
-    print("adm eth sep:",s)
+    print("adm eth sep:",type(s))
+    print("adm eth is A2 White an int:",isinstance(s.A2_Race_White,int))
     if isinstance(s.A2_Race_White,int) or isinstance(s.A2_Race_Black,int) or isinstance(s.A2_Race_Hisp,int) or isinstance(s.A2_Race_Asian,int) or isinstance(s.A2_Race_Native,int) or isinstance(s.A2_Race_Pacisl,int) or isinstance(s.A2_Race_2Plus,int) or isinstance(s.A2_Race_Other,int) or isinstance(s.A2_Race_Unknown,int) or isinstance(s.A2_Race_Refused,int):
         return 'Yes'
     else:
