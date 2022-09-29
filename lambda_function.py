@@ -209,7 +209,7 @@ def validate_row(row):
     mon = int(row['Survey_Month'])
     yr = int(row['Survey_Year'])
     # Population numbers
-    DetPop_First_Day = int(row['DetPop_First_Day'])
+    DetPop_First_Day = (int(row['DetPop_First_Day']) if isinstance(row['DetPop_First_Day'],int) else 0)
     print(isinstance(row['P1_Race_White'],int))
     p1w = (row['P1_Race_White'] if isinstance(row['P1_Race_White'],int) else 0) 
     p1b = (row['P1_Race_Black'] if isinstance(row['P1_Race_Black'],int) else 0)
@@ -234,7 +234,7 @@ def validate_row(row):
     pop = p1w+p1b+p1h+p1a+p1n+p1p+p12+p1o+p1u+p1r+p2w+p2b+p2h+p2a+p2n+p2p+p22+p2o+p2u+p2r
     print("population",pop)
     # Admissions Numbers
-    Total_Adm_Prior_Month = int(row['Total_Adm_Prior_Month'])
+    Total_Adm_Prior_Month = (row['Total_Adm_Prior_Month'] if isinstance(row['Total_Adm_Prior_Month'],int) else 0)
     a1w = (row['A1_Race_White'] if isinstance(row['A1_Race_White'],int) else 0)
     a1b = (row['A1_Race_Black'] if isinstance(row['A1_Race_Black'],int) else 0)
     a1h = (row['A1_Race_Hisp'] if isinstance(row['A1_Race_Hisp'],int) else 0)
