@@ -1,4 +1,5 @@
 from urllib import response
+from numpy import isnan
 import pymysql
 import os
 from datetime import datetime
@@ -176,8 +177,13 @@ def read_from_s3():
 # functions to derrive values from incoming file data
 def pop_prior_month_cond(s):
     # print("pop prior month in:",type(s))
-    print("pop is P1 White an int:",isinstance(s.P1_Race_White,(int,float)),type(s.P1_Race_White))
-    if isinstance(s.P1_Race_White,(int,float)) or isinstance(s.P1_Race_Black,(int,float)) or isinstance(s.P1_Race_Hisp,(int,float)) or isinstance(s.P1_Race_Asian,(int,float)) or isinstance(s.P1_Race_Native,(int,float)) or isinstance(s.P1_Race_Pacisl,(int,float)) or isinstance(s.P1_Race_2Plus,(int,float)) or isinstance(s.P1_Race_Other,(int,float)) or isinstance(s.P1_Race_Unknown,(int,float)) or isinstance(s.P1_Race_Refused,(int,float)):
+    # print("pop is P1 White an int:",isinstance(s.P1_Race_White,(int,float)),type(s.P1_Race_White))
+    # if isinstance(s.P1_Race_White,(int,float)) or isinstance(s.P1_Race_Black,(int,float)) or isinstance(s.P1_Race_Hisp,(int,float)) or isinstance(s.P1_Race_Asian,(int,float)) or isinstance(s.P1_Race_Native,(int,float)) or isinstance(s.P1_Race_Pacisl,(int,float)) or isinstance(s.P1_Race_2Plus,(int,float)) or isinstance(s.P1_Race_Other,(int,float)) or isinstance(s.P1_Race_Unknown,(int,float)) or isinstance(s.P1_Race_Refused,(int,float)):
+    #     return 'Yes'
+    # else:
+    #     return 'No'
+    print("P1 Race is nan",isnan(s.P1_Race_White))
+    if isnan(s.P1_Race_White):
         return 'Yes'
     else:
         return 'No'
