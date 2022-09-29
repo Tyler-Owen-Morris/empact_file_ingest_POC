@@ -117,6 +117,7 @@ def lambda_handler(event, context):
         # print("len valid:",len(valid))
         # print("valid",valid)
         errs = []
+        succs = []
         if len(valid) > 0:
             ds =[]
             for err in valid:
@@ -135,6 +136,7 @@ def lambda_handler(event, context):
                 if len(resp) > 0:
                     errs.append((idx,resp))
                 else:
+                    succs.append((row['SiteID'], str(row['Survey_Month'] +" "+str(row['Survey_Year']))))
                     valid_rows += 1
         except:
             print("this is passing")
@@ -151,7 +153,7 @@ def lambda_handler(event, context):
             df['Adm_Report_Eth'] = df.apply(adm_eth_sep_cond,axis=1)
             df['Recorded_Date'] = df.apply(get_formatted_datetime,axis=1)
             df.to_sql(survey_tbl,engine,if_exists='append',index=False)
-            send_success_email(valid_rows)
+            send_success_email(succs)
         else:
             print("this DF is invalid, send failure text")
             print(errs)
@@ -317,13 +319,15 @@ def send_failure_email(errors):
         print("email sent successfully")
         print(respon['MessageId'])
 
-def send_success_email(count):
+def send_success_email(succs):
     sender = "tmorris+sender@walkerinfo.com"
     recipient = "tmorris+recieve@walkerinfo.com"
-    subj = "File ingested successfully"
-    
-    ebody = '''Hello,\n Thank you for submitting your file to Empact. We successfully added {} entries to our database.\n If you have any follow up questions you may contact Jason@empact.solutions.
-    '''.format(str(count))
+    subj = "Thank you for successfully submitting the JDAI Monthly Detention Survey!"
+    suc_lst = ''
+    for suc in succs:
+        suc_lst += suc[0] +" site added data for " + suc[1] + "\n"
+    ebody = '''Thank you!,\n\n You have successfully submitted JDAI Monthly Survey data for the following site(s): {}\nWe greatly appreciate your continued participation in the Survey. We could not continue to produce robust analyses without you!\n\nBest,\nEmpact Solutions Team
+    '''.format(suc_lst)
 
     try:
         respon = ses_client.send_email(
