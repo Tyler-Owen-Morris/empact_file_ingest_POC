@@ -183,10 +183,9 @@ def pop_prior_month_cond(s):
     else:
         return 'No'
     
-    
 def pop_eth_sep_cond(s):
     # print("Pop eth in:",type(s))
-    print("pop eth is P2 White an int:",not isnan(s.P2_Race_White),type(s.P2_Race_White))
+    #print("pop eth is P2 White an int:",not isnan(s.P2_Race_White),type(s.P2_Race_White))
     if not isnan(s.P2_Race_White) or not isnan(s.P2_Race_Black) or not isnan(s.P2_Race_Hisp) or not isnan(s.P2_Race_Asian) or not isnan(s.P2_Race_Native) or not isnan(s.P2_Race_Pacisl) or not isnan(s.P2_Race_2Plus) or not isnan(s.P2_Race_Other) or not isnan(s.P2_Race_Unknown) or not isnan(s.P2_Race_Refused):
         return 'Yes'
     else:
@@ -194,7 +193,7 @@ def pop_eth_sep_cond(s):
     
 def adm_prior_month_cond(s):
     # print("adm YN in:",type(s))
-    print("adm can report is A1 White an int:",not isnan(s.A1_Race_White))
+    #print("adm can report is A1 White an int:",not isnan(s.A1_Race_White))
     if not isnan(s.A1_Race_White) or not isnan(s.A1_Race_Black) or not isnan(s.A1_Race_Hisp) or not isnan(s.A1_Race_Asian) or not isnan(s.A1_Race_Native) or not isnan(s.A1_Race_Pacisl) or not isnan(s.A1_Race_2Plus) or not isnan(s.A1_Race_Other) or not isnan(s.A1_Race_Unknown) or not isnan(s.A1_Race_Refused):
         return 'Yes'
     else:
@@ -202,7 +201,7 @@ def adm_prior_month_cond(s):
 
 def adm_eth_sep_cond(s):
     # print("adm eth sep:",type(s))
-    print("adm eth is A2 White an int:",not isnan(s.A2_Race_White))
+    #print("adm eth is A2 White an int:",not isnan(s.A2_Race_White))
     if not isnan(s.A2_Race_White) or not isnan(s.A2_Race_Black) or not isnan(s.A2_Race_Hisp) or not isnan(s.A2_Race_Asian) or not isnan(s.A2_Race_Native) or not isnan(s.A2_Race_Pacisl) or not isnan(s.A2_Race_2Plus) or not isnan(s.A2_Race_Other) or not isnan(s.A2_Race_Unknown) or not isnan(s.A2_Race_Refused):
         return 'Yes'
     else:
@@ -217,52 +216,52 @@ def validate_row(row):
     mon = int(row['Survey_Month'])
     yr = int(row['Survey_Year'])
     # Population numbers
-    DetPop_First_Day = (int(row['DetPop_First_Day']) if isinstance(row['DetPop_First_Day'],int) else 0)
-    print(isinstance(row['P1_Race_White'],int))
-    p1w = (row['P1_Race_White'] if isinstance(row['P1_Race_White'],int) else 0) 
-    p1b = (row['P1_Race_Black'] if isinstance(row['P1_Race_Black'],int) else 0)
-    p1h = (row['P1_Race_Hisp'] if isinstance(row['P1_Race_Hisp'],int) else 0)
-    p1a = (row['P1_Race_Asian'] if isinstance(row['P1_Race_Asian'],int) else 0)
-    p1n = (row['P1_Race_Native'] if isinstance(row['P1_Race_Native'],int) else 0)
-    p1p = (row['P1_Race_Pacisl'] if isinstance(row['P1_Race_Pacisl'],int) else 0 )
-    p12 = (row['P1_Race_2Plus'] if isinstance(row['P1_Race_2Plus'],int) else 0)
-    p1o = (row['P1_Race_Other'] if isinstance(row['P1_Race_Other'],int) else 0)
-    p1u = (row['P1_Race_Unknown'] if isinstance(row['P1_Race_Unknown'],int) else 0)
-    p1r = (row['P1_Race_Refused'] if isinstance(row['P1_Race_Refused'],int) else 0)
-    p2w = (row['P2_Race_White'] if isinstance(row['P2_Race_White'],int) else 0)
-    p2b = (row['P2_Race_Black'] if isinstance(row['P2_Race_White'],int) else 0)
-    p2h = (row['P2_Race_Hisp'] if isinstance(row['P2_Race_Hisp'],int) else 0)
-    p2a = (row['P2_Race_Asian'] if isinstance(row['P2_Race_Asian'],int) else 0)
-    p2n = (row['P2_Race_Native'] if isinstance(row['P2_Race_Native'],int) else 0)
-    p2p = (row['P2_Race_Pacisl'] if isinstance(row['P2_Race_Pacisl'],int) else 0)
-    p22 = (row['P2_Race_2Plus'] if isinstance(row['P2_Race_2Plus'],int) else 0)
-    p2o = (row['P2_Race_Other'] if isinstance(row['P2_Race_Other'],int) else 0)
-    p2u = (row['P2_Race_Unknown'] if isinstance(row['P2_Race_Unknown'],int) else 0)
-    p2r = (row['P2_Race_Refused'] if isinstance(row['P2_Race_Refused'],int) else 0)
+    DetPop_First_Day = (int(row['DetPop_First_Day']) if not isnan(row['DetPop_First_Day']) else 0)
+    print(not isnan(row['P1_Race_White']))
+    p1w = (int(row['P1_Race_White']) if not isnan(row['P1_Race_White']) else 0) 
+    p1b = (int(row['P1_Race_Black']) if not isnan(row['P1_Race_Black']) else 0)
+    p1h = (int(row['P1_Race_Hisp']) if not isnan(row['P1_Race_Hisp']) else 0)
+    p1a = (int(row['P1_Race_Asian']) if not isnan(row['P1_Race_Asian']) else 0)
+    p1n = (int(row['P1_Race_Native']) if not isnan(row['P1_Race_Native']) else 0)
+    p1p = (int(row['P1_Race_Pacisl']) if not isnan(row['P1_Race_Pacisl']) else 0 )
+    p12 = (int(row['P1_Race_2Plus']) if not isnan(row['P1_Race_2Plus']) else 0)
+    p1o = (int(row['P1_Race_Other']) if not isnan(row['P1_Race_Other']) else 0)
+    p1u = (int(row['P1_Race_Unknown']) if not isnan(row['P1_Race_Unknown']) else 0)
+    p1r = (int(row['P1_Race_Refused']) if not isnan(row['P1_Race_Refused']) else 0)
+    p2w = (int(row['P2_Race_White']) if not isnan(row['P2_Race_White']) else 0)
+    p2b = (int(row['P2_Race_Black']) if not isnan(row['P2_Race_White']) else 0)
+    p2h = (int(row['P2_Race_Hisp']) if not isnan(row['P2_Race_Hisp']) else 0)
+    p2a = (int(row['P2_Race_Asian']) if not isnan(row['P2_Race_Asian']) else 0)
+    p2n = (int(row['P2_Race_Native']) if not isnan(row['P2_Race_Native']) else 0)
+    p2p = (int(row['P2_Race_Pacisl']) if not isnan(row['P2_Race_Pacisl']) else 0)
+    p22 = (int(row['P2_Race_2Plus']) if not isnan(row['P2_Race_2Plus']) else 0)
+    p2o = (int(row['P2_Race_Other']) if not isnan(row['P2_Race_Other']) else 0)
+    p2u = (int(row['P2_Race_Unknown']) if not isnan(row['P2_Race_Unknown']) else 0)
+    p2r = (int(row['P2_Race_Refused']) if not isnan(row['P2_Race_Refused']) else 0)
     pop = p1w+p1b+p1h+p1a+p1n+p1p+p12+p1o+p1u+p1r+p2w+p2b+p2h+p2a+p2n+p2p+p22+p2o+p2u+p2r
     print("population",pop)
     # Admissions Numbers
-    Total_Adm_Prior_Month = (row['Total_Adm_Prior_Month'] if isinstance(row['Total_Adm_Prior_Month'],int) else 0)
-    a1w = (row['A1_Race_White'] if isinstance(row['A1_Race_White'],int) else 0)
-    a1b = (row['A1_Race_Black'] if isinstance(row['A1_Race_Black'],int) else 0)
-    a1h = (row['A1_Race_Hisp'] if isinstance(row['A1_Race_Hisp'],int) else 0)
-    a1a = (row['A1_Race_Asian'] if isinstance(row['A1_Race_Asian'],int) else 0)
-    a1n = (row['A1_Race_Native'] if isinstance(row['A1_Race_Native'],int) else 0)
-    a1p = (row['A1_Race_Pacisl'] if isinstance(row['A1_Race_Pacisl'],int) else 0)
-    a12 = (row['A1_Race_2Plus'] if isinstance(row['A1_Race_2Plus'],int) else 0)
-    a1o = (row['A1_Race_Other'] if isinstance(row['A1_Race_Other'],int) else 0)
-    a1u = (row['A1_Race_Unknown'] if isinstance(row['A1_Race_Unknown'],int) else 0)
-    a1r = (row['A1_Race_Refused'] if isinstance(row['A1_Race_Refused'],int) else 0)
-    a2w = (row['A2_Race_White'] if isinstance(row['A2_Race_White'],int) else 0)
-    a2b = (row['A2_Race_Black'] if isinstance(row['A2_Race_Black'],int) else 0)
-    a2h = (row['A2_Race_Hisp'] if isinstance(row['A2_Race_Hisp'],int) else 0)
-    a2a = (row['A2_Race_Asian'] if isinstance(row['A2_Race_Asian'],int) else 0)
-    a2n = (row['A2_Race_Native'] if isinstance(row['A2_Race_Native'],int) else 0)
-    a2p = (row['A2_Race_Pacisl'] if isinstance(row['A2_Race_Pacisl'],int) else 0)
-    a22 = (row['A2_Race_2Plus'] if isinstance(row['A2_Race_2Plus'],int) else 0)
-    a2o = (row['A2_Race_Other'] if isinstance(row['A2_Race_Other'],int) else 0)
-    a2u = (row['A2_Race_Unknown'] if isinstance(row['A2_Race_Unknown'],int) else 0)
-    a2r = (row['A2_Race_Refused'] if isinstance(row['A2_Race_Refused'],int) else 0)
+    Total_Adm_Prior_Month = (row['Total_Adm_Prior_Month'] if not isnan(row['Total_Adm_Prior_Month']) else 0)
+    a1w = (int(row['A1_Race_White']) if not isnan(row['A1_Race_White']) else 0)
+    a1b = (int(row['A1_Race_Black']) if not isnan(row['A1_Race_Black']) else 0)
+    a1h = (int(row['A1_Race_Hisp']) if not isnan(row['A1_Race_Hisp']) else 0)
+    a1a = (int(row['A1_Race_Asian']) if not isnan(row['A1_Race_Asian']) else 0)
+    a1n = (int(row['A1_Race_Native']) if not isnan(row['A1_Race_Native']) else 0)
+    a1p = (int(row['A1_Race_Pacisl']) if not isnan(row['A1_Race_Pacisl']) else 0)
+    a12 = (int(row['A1_Race_2Plus']) if not isnan(row['A1_Race_2Plus']) else 0)
+    a1o = (int(row['A1_Race_Other']) if not isnan(row['A1_Race_Other']) else 0)
+    a1u = (int(row['A1_Race_Unknown']) if not isnan(row['A1_Race_Unknown']) else 0)
+    a1r = (int(row['A1_Race_Refused']) if not isnan(row['A1_Race_Refused']) else 0)
+    a2w = (int(row['A2_Race_White']) if not isnan(row['A2_Race_White']) else 0)
+    a2b = (int(row['A2_Race_Black']) if not isnan(row['A2_Race_Black']) else 0)
+    a2h = (int(row['A2_Race_Hisp']) if not isnan(row['A2_Race_Hisp']) else 0)
+    a2a = (int(row['A2_Race_Asian']) if not isnan(row['A2_Race_Asian']) else 0)
+    a2n = (int(row['A2_Race_Native']) if not isnan(row['A2_Race_Native']) else 0)
+    a2p = (int(row['A2_Race_Pacisl']) if not isnan(row['A2_Race_Pacisl']) else 0)
+    a22 = (int(row['A2_Race_2Plus']) if not isnan(row['A2_Race_2Plus']) else 0)
+    a2o = (int(row['A2_Race_Other']) if not isnan(row['A2_Race_Other']) else 0)
+    a2u = (int(row['A2_Race_Unknown']) if not isnan(row['A2_Race_Unknown']) else 0)
+    a2r = (int(row['A2_Race_Refused']) if not isnan(row['A2_Race_Refused']) else 0)
     adm = a1w+a1b+a1h+a1a+a1n+a1p+a12+a1o+a1u+a1r+a2w+a2b+a2h+a2a+a2n+a2p+a22+a2o+a2u+a2r
     # Validation
     if mon < 1 or mon > 12:
