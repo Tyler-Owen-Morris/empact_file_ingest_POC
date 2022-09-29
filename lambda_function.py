@@ -129,8 +129,8 @@ def lambda_handler(event, context):
             errs.append((err.row+1,ds))
         try:
             for idx, row in df.iterrows():
-                print("row",row)
-                print("idx", idx)
+                #print("row",row)
+                #print("idx", idx)
                 resp = validate_row(row)
                 if len(resp) > 0:
                     errs.append((idx,resp))
