@@ -240,7 +240,7 @@ def validate_row(row):
     p2r = (int(row['P2_Race_Refused']) if not isnan(row['P2_Race_Refused']) else 0)
     pop = p1w+p1b+p1h+p1a+p1n+p1p+p12+p1o+p1u+p1r+p2w+p2b+p2h+p2a+p2n+p2p+p22+p2o+p2u+p2r
     print("population",pop)
-    # Admissions Numbers
+    # Admissions Count Numbers
     Total_Adm_Prior_Month = (row['Total_Adm_Prior_Month'] if not isnan(row['Total_Adm_Prior_Month']) else 0)
     a1w = (int(row['A1_Race_White']) if not isnan(row['A1_Race_White']) else 0)
     a1b = (int(row['A1_Race_Black']) if not isnan(row['A1_Race_Black']) else 0)
@@ -263,6 +263,8 @@ def validate_row(row):
     a2u = (int(row['A2_Race_Unknown']) if not isnan(row['A2_Race_Unknown']) else 0)
     a2r = (int(row['A2_Race_Refused']) if not isnan(row['A2_Race_Refused']) else 0)
     adm = a1w+a1b+a1h+a1a+a1n+a1p+a12+a1o+a1u+a1r+a2w+a2b+a2h+a2a+a2n+a2p+a22+a2o+a2u+a2r
+    # Admissions Reason Numbers
+
     # Validation
     if mon < 1 or mon > 12:
         resp.append("Survey_Month Invalid")
@@ -334,8 +336,8 @@ def send_success_email(succs):
     suc_lst = ''
     for suc in succs:
         print("individual success:",suc)
-        suc_lst += suc[0] +" site added data for " + suc[1] + "\n\n"
-    ebody = '''Thank you!,\n\n You have successfully submitted JDAI Monthly Survey data for the following site(s):\n\n{}\nWe greatly appreciate your continued participation in the Survey. We could not continue to produce robust analyses without you!\n\nBest,\nEmpact Solutions Team
+        suc_lst += suc[0] +" site added data for " + suc[1] + "\n"
+    ebody = '''Thank you!\n\nYou have successfully submitted JDAI Monthly Survey data for the following site(s):\n\n{}\nWe greatly appreciate your continued participation in the Survey. We could not continue to produce robust analyses without you!\n\nBest,\nEmpact Solutions Team
     '''.format(suc_lst)
 
     try:
