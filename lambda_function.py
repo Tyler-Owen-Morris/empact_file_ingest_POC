@@ -264,7 +264,13 @@ def validate_row(row):
     a2r = (int(row['A2_Race_Refused']) if not isnan(row['A2_Race_Refused']) else 0)
     adm = a1w+a1b+a1h+a1a+a1n+a1p+a12+a1o+a1u+a1r+a2w+a2b+a2h+a2a+a2n+a2p+a22+a2o+a2u+a2r
     # Admissions Reason Numbers
-
+    aRno = (int(row['Admission_Reason_New_Offense']) if not isnan(row['Admission_Reason_New_Offense']) else 0)
+    aRtc = (int(row['Admission_Reason_Technical']) if not isnan(row['Admission_Reason_Technical']) else 0)
+    aRtr = (int(row['Admission_Reason_Transfer']) if not isnan(row['Admission_Reason_Transfer']) else 0)
+    aRp = (int(row['Admission_Reason_Post']) if not isnan(row['Admission_Reason_Post']) else 0)
+    aRo = (int(row['Admission_Reason_Other']) if not isnan(row['Admission_Reason_Other']) else 0)
+    aRun = (int(row['Admission_Reason_Unknown']) if not isnan(row['Admission_Reason_Unknown']) else 0)
+    aRtotal =  aRno + aRtc + aRtr + aRp + aRo + aRun
     # Validation
     if mon < 1 or mon > 12:
         resp.append("Survey_Month Invalid")
@@ -274,6 +280,8 @@ def validate_row(row):
         resp.append("Population counts to not match reported totals")
     if adm != Total_Adm_Prior_Month:
         resp.append("Admission counts do not match reported totals")
+    if aRtotal != Total_Adm_Prior_Month:
+        resp.append("Number of admission reasons")
     exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == '"+row['SiteID']+"'")
     print(">>>>> exists:",exi.shape)
     if exi.shape[0] > 0:
