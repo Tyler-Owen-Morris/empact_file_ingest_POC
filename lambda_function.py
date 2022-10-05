@@ -105,6 +105,9 @@ def lambda_handler(event, context):
     # Iterate through the keys
     for key in keys:
         mykey = key
+        tgt_email, fname = parse_filename(mykey)
+        print("target email:",tgt_email)
+        print("original filename:",fname)
         csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
         #print("gotten obj:",csv_obj)
         body = csv_obj['Body'].read().decode('utf-8')
@@ -152,12 +155,12 @@ def lambda_handler(event, context):
             df['Adm_Report_Eth'] = df.apply(adm_eth_sep_cond,axis=1)
             df['Recorded_Date'] = df.apply(get_formatted_datetime,axis=1)
             df.to_sql(survey_tbl,engine,if_exists='append',index=False)
-            send_success_email(succs)
+            send_success_email(succs, tgt_email)
         else:
             print("this DF is invalid, send failure text")
             print(errs)
             file_err.append(errs)
-            send_failure_email(errs)
+            send_failure_email(errs,tgt_email)
         #copy the processed object to archive folder.
         archive_file(mykey)
 
@@ -173,6 +176,12 @@ def read_from_s3():
         if 'archive/' not in obj.key:
             ret.append(obj.key)
     return ret
+
+def parse_filename(fname):
+    farr = fname.split("|")
+    email = farr[0] + "@" + farr[1]
+    fnme = farr[-1]
+    return email, fnme
 
 # functions to derrive values from incoming file data
 def pop_prior_month_cond(s):
@@ -297,9 +306,9 @@ def archive_file(key):
     s3.meta.client.copy(copy_source, bucket, 'archive/'+newkey)
     s3.Object(bucket,key).delete()
 
-def send_failure_email(errors):
+def send_failure_email(errors, temail):
     sender = "tmorris+sender@walkerinfo.com"
-    recipient = "tmorris+recieve@walkerinfo.com"
+    recipient = temail
     subj = "ERROR: JDAI Monthly Detention Survey Not Submitted"
     er_lst = ''
     for err in errors:
@@ -336,10 +345,10 @@ def send_failure_email(errors):
         print("email sent successfully")
         print(respon['MessageId'])
 
-def send_success_email(succs):
+def send_success_email(succs, temial):
     print("success rows obj",succs)
     sender = "tmorris+sender@walkerinfo.com"
-    recipient = "tmorris+recieve@walkerinfo.com"
+    recipient = temial
     subj = "Thank you for successfully submitting the JDAI Monthly Detention Survey!"
     suc_lst = ''
     for suc in succs:
