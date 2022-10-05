@@ -178,7 +178,7 @@ def read_from_s3():
     return ret
 
 def parse_filename(fname):
-    farr = fname.split("|")
+    farr = fname.split("-")
     email = farr[0] + "@" + farr[1]
     fnme = farr[-1]
     return email, fnme
