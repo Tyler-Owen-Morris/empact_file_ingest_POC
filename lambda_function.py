@@ -297,12 +297,12 @@ def validate_row(row):
         resp.append("Row data already exists")
     return resp
 
-def archive_file(key):
+def archive_file(key, tkey):
     copy_source = {
         'Bucket': bucket,
         'Key': key
     }
-    newkey = ".".join([key.split('.')[0]+datetime.now().strftime("|%m-%d-%Y %I:%M:%S"),key.split('.')[-1]])
+    newkey = ".".join([tkey.split('.')[0]+datetime.now().strftime("|%m-%d-%Y %I:%M:%S"),tkey.split('.')[-1]])
     s3.meta.client.copy(copy_source, bucket, 'archive/'+newkey)
     s3.Object(bucket,key).delete()
 
