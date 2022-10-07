@@ -5,12 +5,14 @@ import os
 from datetime import datetime
 import uuid
 from random import randint
-from io import StringIO, BytesIO
+from io import StringIO
 import sqlalchemy
 import boto3
 import pandas as pd
 from pandas_schema import Column,Schema,validation
 from botocore.exceptions import ClientError
+import json
+import base64
 
 
 ## **** CONFIGURATION VARIABLES **** ##
@@ -105,7 +107,7 @@ def lambda_handler(event, context):
     # Iterate through the keys
     for key in keys:
         mykey = key
-        tgt_email, fname = parse_filename(mykey)
+        tgt_email, fname = decode_base64url_fileobj(mykey)
         print("target email:",tgt_email)
         print("original filename:",fname)
         csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
@@ -177,11 +179,10 @@ def read_from_s3():
             ret.append(obj.key)
     return ret
 
-def parse_filename(fname):
-    farr = fname.split("-")
-    email = farr[0] + "@" + farr[1]
-    fnme = farr[-1]
-    return email, fnme
+def decode_base64url_fileobj(st):
+  splitStr = st.split(".")
+  decoded =  json.loads(base64.urlsafe_b64decode(splitStr[0] + '=' * (4 - len(splitStr[0]) % 4)))
+  return decoded['email'], decoded['file']
 
 # functions to derrive values from incoming file data
 def pop_prior_month_cond(s):
