@@ -164,7 +164,7 @@ def lambda_handler(event, context):
             file_err.append(errs)
             send_failure_email(errs,tgt_email)
         #copy the processed object to archive folder.
-        archive_file(mykey)
+        archive_file(mykey,fname)
 
 
 ## UTILITY FUNCTIONS
