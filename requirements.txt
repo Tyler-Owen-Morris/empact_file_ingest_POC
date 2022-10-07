@@ -6,3 +6,5 @@ requests
 pandas
 sqlalchemy
 pandas_schema
+json
+base64

@@ -182,7 +182,7 @@ def read_from_s3():
 def decode_base64url_fileobj(st):
   splitStr = st.split(".")
   decoded =  json.loads(base64.urlsafe_b64decode(splitStr[0] + '=' * (4 - len(splitStr[0]) % 4)))
-  return decoded['email'], decoded['file']
+  return decoded['email'], decoded['fileName']
 
 # functions to derrive values from incoming file data
 def pop_prior_month_cond(s):
