@@ -125,7 +125,7 @@ def lambda_handler(event, context):
         else:
             print("file not correct type:",fext)
             continue
-            
+        print(df.head())
         ### Validate the file/contents
         #print("dataframe:",df)
         valid = schema.validate(df)
