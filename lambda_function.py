@@ -120,8 +120,8 @@ def lambda_handler(event, context):
             body = csv_obj['Body'].read().decode('utf-8')
             df = pd.read_csv(StringIO(body), sep=",")
         elif fext == "xlsx":
-            body = csv_obj['Body'].read()
-            df = pd.read_excel(BytesIO(body), encoding='utf-8')
+            body = csv_obj['Body'].read().decode('utf-8')
+            df = pd.read_excel(BytesIO(body))
         else:
             print("file not correct type:",fext)
             continue
