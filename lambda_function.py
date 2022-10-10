@@ -111,6 +111,7 @@ def lambda_handler(event, context):
         fext = fname.split(".")[-1]
         print("target email:",tgt_email)
         print("original filename:",fname)
+        print("file extension:",fext)
         csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
         #print("gotten obj:",csv_obj)
         #print("body:",body)
