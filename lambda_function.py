@@ -117,15 +117,19 @@ def lambda_handler(event, context):
         #print("body:",body)
         #csv_string = body.read().decode('utf-8')
         if fext == "csv":
+            print("found CSV file")
             body = bucket_obj['Body'].read().decode('utf-8')
             df = pd.read_csv(StringIO(body), sep=",")
         elif fext == "xlsx":
+            print("found excel file")
             body = bucket_obj['Body'].read()
-            df = pd.read_excel(BytesIO(body))
+            with open("/tmp/"+fname, "wb") as file:
+                file.write(BytesIO(body))
+            df = pd.read_excel("/tmp/"+fname)
         else:
             print("file not correct type:",fext)
             continue
-        print(df.head())
+        print("DF HEAD",df.head())
         ### Validate the file/contents
         #print("dataframe:",df)
         valid = schema.validate(df)
