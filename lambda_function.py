@@ -122,9 +122,8 @@ def lambda_handler(event, context):
             df = pd.read_csv(StringIO(body), sep=",")
         elif fext == "xlsx":
             print("found excel file")
-            body = bucket_obj['Body'].read()
             with open("/tmp/"+fname, "wb") as file:
-                file.write(BytesIO(body).getvalue())
+                s3_client.download_fileobj(bucket,mykey,file)
             df = pd.read_excel("/tmp/"+fname)
         else:
             print("file not correct type:",fext)
