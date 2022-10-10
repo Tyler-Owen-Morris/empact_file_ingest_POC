@@ -124,7 +124,7 @@ def lambda_handler(event, context):
             print("found excel file")
             body = bucket_obj['Body'].read()
             with open("/tmp/"+fname, "wb") as file:
-                file.write(BytesIO(body))
+                file.write(BytesIO(body).getvalue())
             df = pd.read_excel("/tmp/"+fname)
         else:
             print("file not correct type:",fext)
