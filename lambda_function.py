@@ -108,6 +108,7 @@ def lambda_handler(event, context):
     for key in keys:
         mykey = key
         tgt_email, fname = decode_base64url_fileobj(mykey)
+        fext = fname.split(".")[-1]
         print("target email:",tgt_email)
         print("original filename:",fname)
         csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
@@ -115,7 +116,14 @@ def lambda_handler(event, context):
         body = csv_obj['Body'].read().decode('utf-8')
         #print("body:",body)
         #csv_string = body.read().decode('utf-8')
-        df = pd.read_csv(StringIO(body), sep=",")
+        if fext == "csv":
+            df = pd.read_csv(StringIO(body), sep=",")
+        elif fext == "xlsx":
+            df = pd.read_excel(StringIO(body))
+        else:
+            print("file not correct type:",fext)
+            continue
+            
         ### Validate the file/contents
         #print("dataframe:",df)
         valid = schema.validate(df)
