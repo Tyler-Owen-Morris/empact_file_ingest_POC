@@ -112,15 +112,15 @@ def lambda_handler(event, context):
         print("target email:",tgt_email)
         print("original filename:",fname)
         print("file extension:",fext)
-        csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
-        #print("gotten obj:",csv_obj)
+        bucket_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
+        #print("gotten obj:",bucket_obj)
         #print("body:",body)
         #csv_string = body.read().decode('utf-8')
         if fext == "csv":
-            body = csv_obj['Body'].read().decode('utf-8')
+            body = bucket_obj['Body'].read().decode('utf-8')
             df = pd.read_csv(StringIO(body), sep=",")
         elif fext == "xlsx":
-            body = csv_obj['Body'].read().decode('utf-8')
+            body = bucket_obj['Body'].read()
             df = pd.read_excel(BytesIO(body))
         else:
             print("file not correct type:",fext)
