@@ -108,7 +108,7 @@ def lambda_handler(event, context):
     for key in keys:
         mykey = key
         tgt_email, fname = decode_base64url_fileobj(mykey)
-        fext = fname.split(".")[-1]
+        fext = mykey.split(".")[-1]
         print("target email:",tgt_email)
         print("original filename:",fname)
         print("file extension:",fext)
