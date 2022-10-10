@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import uuid
 from random import randint
-from io import StringIO
+from io import StringIO, BytesIO
 import sqlalchemy
 import boto3
 import pandas as pd
@@ -113,13 +113,14 @@ def lambda_handler(event, context):
         print("original filename:",fname)
         csv_obj = s3_client.get_object(Bucket=bucket, Key=mykey)
         #print("gotten obj:",csv_obj)
-        body = csv_obj['Body'].read().decode('utf-8')
         #print("body:",body)
         #csv_string = body.read().decode('utf-8')
         if fext == "csv":
+            body = csv_obj['Body'].read().decode('utf-8')
             df = pd.read_csv(StringIO(body), sep=",")
         elif fext == "xlsx":
-            df = pd.read_excel(StringIO(body))
+            body = csv_obj['Body'].read()
+            df = pd.read_excel(BytesIO(body), encoding='utf-8')
         else:
             print("file not correct type:",fext)
             continue
