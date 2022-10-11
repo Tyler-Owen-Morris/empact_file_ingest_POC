@@ -304,7 +304,7 @@ def validate_row(row):
     if adm != Total_Adm_Prior_Month:
         resp.append("Admission counts do not match reported totals")
     if aRtotal != Total_Adm_Prior_Month:
-        resp.append("Number of admission reasons")
+        resp.append("Number of admission reasons does not match reported totals")
     exi = sql_tbl.query("Survey_Year == "+str(row['Survey_Year'])+" and Survey_Month == "+str(row['Survey_Month'])+" and SiteID == '"+row['SiteID']+"'")
     print(">>>>> exists:",exi.shape)
     if exi.shape[0] > 0:
