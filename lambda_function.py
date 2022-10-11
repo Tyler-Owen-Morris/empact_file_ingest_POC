@@ -364,12 +364,12 @@ def send_success_email(succs, temial):
     sender = "tmorris+sender@walkerinfo.com"
     recipient = temial
     subj = "Thank you for successfully submitting the JDAI Monthly Detention Survey!"
-    suc_lst = ''
+    suc_lst = []
     for suc in succs:
         print("individual success:",suc)
-        suc_lst += suc[0] +" site added data for " + suc[1] 
+        suc_lst.append( suc[0] +" site added data for " + suc[1] )
     ebody = '''Thank you!\n\nYou have successfully submitted JDAI Monthly Survey data for the following site(s):\n\n{}\nWe greatly appreciate your continued participation in the Survey. We could not continue to produce robust analyses without you!\n\nBest,\nEmpact Solutions Team
-    '''.format(suc_lst)
+    '''.format(", ".join(suc_lst))
 
     try:
         respon = ses_client.send_email(
